@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="Nazar Prots">
+        <createTable tableName="roles">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Nazar Prots">
+        <createTable tableName="user_roles">
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="user_roles"
+                baseColumnNames="user_id"
+                constraintName="fk_user_roles_user"
+                referencedTableName="users"
+                referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="user_roles"
+                baseColumnNames="role_id"
+                constraintName="fk_user_roles_role"
+                referencedTableName="roles"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="3" author="Nazar Prots">
+        <dropColumn tableName="users" columnName="role"/>
+    </changeSet>
+
+</databaseChangeLog>
