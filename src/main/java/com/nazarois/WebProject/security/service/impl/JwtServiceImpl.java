@@ -15,8 +15,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -84,8 +82,7 @@ public class JwtServiceImpl implements JwtService {
 
   private String getAuthorities(User user) {
     return user.getRoles().stream()
-        .map(role -> new SimpleGrantedAuthority(role.getRole().name()))
-        .map(GrantedAuthority::getAuthority)
+        .map(role -> role.getRole().name())
         .collect(Collectors.joining(","));
   }
 }

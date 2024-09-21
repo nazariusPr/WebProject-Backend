@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -24,11 +23,7 @@ public class UserCredential {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
-
-  @NotBlank
-  @Column(name = "username", unique = true, nullable = false)
-  private String username;
-
+  
   @Pattern(
       regexp = "[A-Za-z\\d]{6,}",
       message = "Must be minimum 6 symbols long, using digits and latin letters")
