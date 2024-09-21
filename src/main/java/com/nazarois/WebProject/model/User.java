@@ -39,6 +39,9 @@ public class User {
   @Column(name = "status")
   private UserStatus status;
 
+  @Column(name = "is_verified")
+  private boolean isVerified;
+
   @ManyToMany
   @JoinTable(
       name = "user_roles",
