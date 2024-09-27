@@ -19,12 +19,12 @@ import com.nazarois.WebProject.security.service.UserCredentialService;
 import com.nazarois.WebProject.security.service.UserRoleService;
 import com.nazarois.WebProject.service.EmailService;
 import com.nazarois.WebProject.service.UserService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -46,6 +46,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Value("${security.jwt.refresh-token-expiration}")
   private Long REFRESH_TOKEN_EXPIRATION;
 
+  @Value("${security.cookie-expiration}")
+  private Long COOKIE_EXPIRATION;
+
   @Override
   public void register(AuthenticateDto request) {
     User user = createUser(request);
@@ -61,7 +64,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     User user = this.userService.updateUserVerifiedStatus(email, true);
 
     String refreshToken = this.getRefreshToken(user);
-    this.setRefreshTokenCookie(response, refreshToken);
+    this.setRefreshTokenCookie(response, refreshToken, COOKIE_EXPIRATION);
     String jwtToken = this.jwtService.generateToken(user, this.ACCESS_TOKEN_EXPIRATION);
 
     return new TokenDto(jwtToken);
@@ -77,7 +80,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       throw new SecurityException(USER_NOT_VERIFIED_MESSAGE);
     }
     String refreshToken = this.getRefreshToken(user);
-    this.setRefreshTokenCookie(response, refreshToken);
+    this.setRefreshTokenCookie(response, refreshToken, COOKIE_EXPIRATION);
 
     String jwtToken = this.jwtService.generateToken(user, this.ACCESS_TOKEN_EXPIRATION);
     return new TokenDto(jwtToken);
@@ -95,6 +98,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return new TokenDto(jwtToken);
   }
 
+  @Override
+  public void setRefreshTokenCookie(
+          HttpServletResponse response, String refreshToken, Long maxAge) {
+    ResponseCookie cookie =
+            ResponseCookie.from(REFRESH_TOKEN, refreshToken)
+                    .path(AUTH_LINK)
+                    .maxAge(maxAge)
+                    .httpOnly(true)
+                    .secure(false)
+                    .sameSite("None")
+                    .build();
+
+    response.addHeader("Set-Cookie", cookie.toString());
+  }
+
   private User createUser(AuthenticateDto authenticateDto) {
     Set<Role> roles = Set.of(roleService.getRole(UserRole.ROLE_USER));
     User user = userService.create(authenticateDto, roles);
@@ -103,15 +121,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return user;
   }
 
-  private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
-    Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, refreshToken);
-    refreshTokenCookie.setHttpOnly(true);
-    refreshTokenCookie.setSecure(false);
-    refreshTokenCookie.setPath(AUTH_LINK);
-    refreshTokenCookie.setMaxAge(Math.toIntExact(this.REFRESH_TOKEN_EXPIRATION / 1000));
-
-    response.addCookie(refreshTokenCookie);
-  }
 
   private String getRefreshToken(User user) {
     return this.jwtService.generateToken(user, this.REFRESH_TOKEN_EXPIRATION);

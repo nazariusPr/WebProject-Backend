@@ -14,4 +14,6 @@ public interface AuthenticationService {
   TokenDto authenticate(AuthenticateDto request, HttpServletResponse response);
 
   TokenDto refreshToken(String refreshToken);
+
+  void setRefreshTokenCookie(HttpServletResponse response, String refreshToken, Long maxAge);
 }
