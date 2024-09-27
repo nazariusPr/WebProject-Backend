@@ -46,6 +46,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Value("${security.jwt.refresh-token-expiration}")
   private Long REFRESH_TOKEN_EXPIRATION;
 
+  @Value("${security.cookie-expiration}")
+  private Long COOKIE_EXPIRATION;
+
   @Override
   public void register(AuthenticateDto request) {
     User user = createUser(request);
@@ -61,7 +64,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     User user = this.userService.updateUserVerifiedStatus(email, true);
 
     String refreshToken = this.getRefreshToken(user);
-    this.setRefreshTokenCookie(response, refreshToken);
+    this.setRefreshTokenCookie(response, refreshToken, COOKIE_EXPIRATION);
     String jwtToken = this.jwtService.generateToken(user, this.ACCESS_TOKEN_EXPIRATION);
 
     return new TokenDto(jwtToken);
@@ -77,7 +80,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       throw new SecurityException(USER_NOT_VERIFIED_MESSAGE);
     }
     String refreshToken = this.getRefreshToken(user);
-    this.setRefreshTokenCookie(response, refreshToken);
+    this.setRefreshTokenCookie(response, refreshToken, COOKIE_EXPIRATION);
 
     String jwtToken = this.jwtService.generateToken(user, this.ACCESS_TOKEN_EXPIRATION);
     return new TokenDto(jwtToken);
@@ -95,6 +98,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return new TokenDto(jwtToken);
   }
 
+  @Override
+  public void setRefreshTokenCookie(
+          HttpServletResponse response, String refreshToken, Long maxAge) {
+    ResponseCookie cookie =
+            ResponseCookie.from(REFRESH_TOKEN, refreshToken)
+                    .path(AUTH_LINK)
+                    .maxAge(maxAge)
+                    .httpOnly(true)
+                    .secure(false)
+                    .sameSite("None")
+                    .build();
+
+    response.addHeader("Set-Cookie", cookie.toString());
+  }
+
   private User createUser(AuthenticateDto authenticateDto) {
     Set<Role> roles = Set.of(roleService.getRole(UserRole.ROLE_USER));
     User user = userService.create(authenticateDto, roles);
@@ -103,17 +121,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return user;
   }
 
-  private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
-    ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, refreshToken)
-            .path(AUTH_LINK)
-            .maxAge(Math.toIntExact(this.REFRESH_TOKEN_EXPIRATION / 1000))
-            .httpOnly(true)
-            .secure(false)
-            .sameSite("None")
-            .build();
-
-    response.addHeader("Set-Cookie", cookie.toString());
-  }
 
   private String getRefreshToken(User user) {
     return this.jwtService.generateToken(user, this.REFRESH_TOKEN_EXPIRATION);

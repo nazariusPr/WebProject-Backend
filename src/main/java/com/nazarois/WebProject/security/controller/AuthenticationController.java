@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,5 +66,13 @@ public class AuthenticationController {
       @CookieValue(name = "refresh_token", defaultValue = "") String refreshToken) {
     TokenDto authResponse = this.authenticationService.refreshToken(refreshToken);
     return ResponseEntity.ok(authResponse);
+  }
+
+  @DeleteMapping("/logout")
+  public ResponseEntity<Void> deleteRefreshToken(HttpServletResponse response, @CookieValue(name = "refresh_token", defaultValue = "") String refreshToken){
+    this.authenticationService.setRefreshTokenCookie(response, refreshToken, 0L);
+
+    log.info("**/ Delete refresh token");
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }
