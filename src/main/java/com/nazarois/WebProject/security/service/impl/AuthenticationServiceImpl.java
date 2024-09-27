@@ -19,12 +19,12 @@ import com.nazarois.WebProject.security.service.UserCredentialService;
 import com.nazarois.WebProject.security.service.UserRoleService;
 import com.nazarois.WebProject.service.EmailService;
 import com.nazarois.WebProject.service.UserService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -104,13 +104,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   }
 
   private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
-    Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN, refreshToken);
-    refreshTokenCookie.setHttpOnly(true);
-    refreshTokenCookie.setSecure(false);
-    refreshTokenCookie.setPath(AUTH_LINK);
-    refreshTokenCookie.setMaxAge(Math.toIntExact(this.REFRESH_TOKEN_EXPIRATION / 1000));
+    ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, refreshToken)
+            .path(AUTH_LINK)
+            .maxAge(Math.toIntExact(this.REFRESH_TOKEN_EXPIRATION / 1000))
+            .httpOnly(true)
+            .secure(false)
+            .sameSite("None")
+            .build();
 
-    response.addCookie(refreshTokenCookie);
+    response.addHeader("Set-Cookie", cookie.toString());
   }
 
   private String getRefreshToken(User user) {
