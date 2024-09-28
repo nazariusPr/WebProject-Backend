@@ -11,6 +11,8 @@ public interface AuthenticationService {
 
   TokenDto verifyEmail(UUID token, HttpServletResponse response);
 
+  void resendVerificationEmail(String email);
+
   TokenDto authenticate(AuthenticateDto request, HttpServletResponse response);
 
   TokenDto refreshToken(String refreshToken);
