@@ -31,6 +31,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +54,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private Long COOKIE_EXPIRATION;
 
   @Override
+  @Transactional
   public void register(AuthenticateDto request) {
     User user = createUser(request);
     EmailVerificationToken token = this.emailVerificationService.create(user);
