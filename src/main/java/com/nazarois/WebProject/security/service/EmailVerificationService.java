@@ -6,9 +6,11 @@ import com.nazarois.WebProject.model.User;
 import java.util.UUID;
 
 public interface EmailVerificationService {
-    EmailVerificationToken create(User user);
+  EmailVerificationToken create(User user);
 
-    String validate(UUID tokenId);
+  String validate(UUID tokenId);
 
-    void delete(UUID tokenId);
+  void delete(UUID tokenId);
+
+  EmailVerificationToken findByUserEmail(String email);
 }

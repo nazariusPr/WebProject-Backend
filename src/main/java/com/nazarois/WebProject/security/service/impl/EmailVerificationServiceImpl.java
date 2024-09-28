@@ -1,5 +1,6 @@
 package com.nazarois.WebProject.security.service.impl;
 
+import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY_NOT_FOUND_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.INVALID_TOKEN_MESSAGE;
 
 import com.nazarois.WebProject.exception.exceptions.TokenExpirationException;
@@ -55,6 +56,13 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
   public void delete(UUID tokenId) {
     this.find(tokenId);
     this.repository.deleteById(tokenId);
+  }
+
+  @Override
+  public EmailVerificationToken findByUserEmail(String email) {
+    return this.repository
+        .findByUserEmail(email)
+        .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_MESSAGE));
   }
 
   private EmailVerificationToken find(UUID tokenId) {

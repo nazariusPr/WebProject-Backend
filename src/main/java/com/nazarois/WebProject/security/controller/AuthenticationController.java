@@ -53,6 +53,12 @@ public class AuthenticationController {
     return ResponseEntity.ok(this.authenticationService.verifyEmail(token, response));
   }
 
+  @PostMapping("/resend-verification-email")
+  public ResponseEntity<String> resendVerificationEmail(@RequestParam String email) {
+    this.authenticationService.resendVerificationEmail(email);
+    return ResponseEntity.ok("Verification email resent successfully.");
+  }
+
   @PostMapping
   public ResponseEntity<TokenDto> authenticate(
       @Validated @RequestBody AuthenticateDto request,

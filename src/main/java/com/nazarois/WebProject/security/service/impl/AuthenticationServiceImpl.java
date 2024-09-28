@@ -76,6 +76,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   }
 
   @Override
+  public void resendVerificationEmail(String email) {
+    EmailVerificationToken token = this.emailVerificationService.findByUserEmail(email);
+    this.emailService.sendVerificationEmail(email, token.getId().toString());
+  }
+
+  @Override
   public TokenDto authenticate(AuthenticateDto request, HttpServletResponse response) {
     this.authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
