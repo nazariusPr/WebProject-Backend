@@ -2,6 +2,7 @@ package com.nazarois.WebProject.security.service.impl;
 
 import static com.nazarois.WebProject.constants.AppConstants.AUTH_LINK;
 import static com.nazarois.WebProject.constants.AppConstants.REFRESH_TOKEN;
+import static com.nazarois.WebProject.constants.AppConstants.REFRESH_TOKEN_CLAIM;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.INVALID_TOKEN_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.USER_NOT_VERIFIED_MESSAGE;
 
@@ -20,6 +21,8 @@ import com.nazarois.WebProject.security.service.UserRoleService;
 import com.nazarois.WebProject.service.EmailService;
 import com.nazarois.WebProject.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -88,9 +91,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   @Override
   public TokenDto refreshToken(String refreshToken) {
-    if (refreshToken.isEmpty() || this.jwtService.isTokenExpired(refreshToken)) {
-      throw new InvalidTokenException(INVALID_TOKEN_MESSAGE);
-    }
+    validateRefreshToken(refreshToken);
+
     String email = this.jwtService.extractUsername(refreshToken);
     User user = this.userService.findUserByEmail(email);
 
@@ -100,15 +102,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   @Override
   public void setRefreshTokenCookie(
-          HttpServletResponse response, String refreshToken, Long maxAge) {
+      HttpServletResponse response, String refreshToken, Long maxAge) {
     ResponseCookie cookie =
-            ResponseCookie.from(REFRESH_TOKEN, refreshToken)
-                    .path(AUTH_LINK)
-                    .maxAge(maxAge)
-                    .httpOnly(true)
-                    .secure(false)
-                    .sameSite("None")
-                    .build();
+        ResponseCookie.from(REFRESH_TOKEN, refreshToken)
+            .path(AUTH_LINK)
+            .maxAge(maxAge)
+            .httpOnly(true)
+            .secure(false)
+            .sameSite("None")
+            .build();
 
     response.addHeader("Set-Cookie", cookie.toString());
   }
@@ -121,8 +123,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return user;
   }
 
-
   private String getRefreshToken(User user) {
-    return this.jwtService.generateToken(user, this.REFRESH_TOKEN_EXPIRATION);
+    Map<String, Object> claims = new HashMap<>();
+    claims.put(REFRESH_TOKEN_CLAIM, true);
+
+    return this.jwtService.generateToken(claims, user, this.REFRESH_TOKEN_EXPIRATION);
+  }
+
+  private void validateRefreshToken(String refreshToken) {
+    if (refreshToken.isEmpty()
+        || this.jwtService.isTokenExpired(refreshToken)
+        || !Boolean.TRUE.equals(
+            this.jwtService.extractClaims(
+                refreshToken, claims -> (Boolean) claims.get(REFRESH_TOKEN_CLAIM)))) {
+
+      throw new InvalidTokenException(INVALID_TOKEN_MESSAGE);
+    }
   }
 }
