@@ -8,7 +8,7 @@ import static com.nazarois.WebProject.constants.ExceptionMessageConstants.USER_N
 
 import com.nazarois.WebProject.dto.AuthenticateDto;
 import com.nazarois.WebProject.dto.TokenDto;
-import com.nazarois.WebProject.exception.InvalidTokenException;
+import com.nazarois.WebProject.exception.exceptions.InvalidTokenException;
 import com.nazarois.WebProject.model.EmailVerificationToken;
 import com.nazarois.WebProject.model.Role;
 import com.nazarois.WebProject.model.User;

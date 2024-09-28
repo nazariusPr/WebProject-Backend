@@ -1,4 +1,4 @@
-package com.nazarois.WebProject.exception;
+package com.nazarois.WebProject.exception.exceptions;
 
 public class TokenExpirationException extends RuntimeException {
   public TokenExpirationException() {}

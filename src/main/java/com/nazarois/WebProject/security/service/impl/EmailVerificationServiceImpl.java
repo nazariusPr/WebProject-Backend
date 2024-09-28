@@ -2,7 +2,7 @@ package com.nazarois.WebProject.security.service.impl;
 
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.INVALID_TOKEN_MESSAGE;
 
-import com.nazarois.WebProject.exception.TokenExpirationException;
+import com.nazarois.WebProject.exception.exceptions.TokenExpirationException;
 import com.nazarois.WebProject.model.EmailVerificationToken;
 import com.nazarois.WebProject.model.User;
 import com.nazarois.WebProject.security.repository.EmailVerificationTokenRepository;
