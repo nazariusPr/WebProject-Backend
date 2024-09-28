@@ -61,8 +61,7 @@ public class AuthenticationController {
     if (result.hasErrors()) {
 
       log.error("**/ Bad request to authenticate user");
-      throw new ValidationException(
-          Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
+      throw new ValidationException("Invalid credentials !");
     }
 
     log.info("**/ Authenticate user");
