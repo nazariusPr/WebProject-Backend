@@ -7,12 +7,14 @@ import com.nazarois.WebProject.dto.TokenDto;
 import com.nazarois.WebProject.security.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ValidationException;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +32,12 @@ public class AuthenticationController {
   private final AuthenticationService authenticationService;
 
   @PostMapping("/register")
-  public ResponseEntity<Void> register(@RequestBody AuthenticateDto request, BindingResult result) {
+  public ResponseEntity<Void> register(
+      @Validated @RequestBody AuthenticateDto request, BindingResult result) {
     if (result.hasErrors()) {
       log.error("**/ Bad request to register new user");
-      throw new ValidationException("Bad request");
+      throw new ValidationException(
+          Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
     }
 
     this.authenticationService.register(request);
@@ -51,10 +55,14 @@ public class AuthenticationController {
 
   @PostMapping
   public ResponseEntity<TokenDto> authenticate(
-          @RequestBody AuthenticateDto request, BindingResult result, HttpServletResponse response) {
+      @Validated @RequestBody AuthenticateDto request,
+      BindingResult result,
+      HttpServletResponse response) {
     if (result.hasErrors()) {
+
       log.error("**/ Bad request to authenticate user");
-      throw new ValidationException("Bad request");
+      throw new ValidationException(
+          Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
     }
 
     log.info("**/ Authenticate user");
@@ -69,7 +77,9 @@ public class AuthenticationController {
   }
 
   @DeleteMapping("/logout")
-  public ResponseEntity<Void> deleteRefreshToken(HttpServletResponse response, @CookieValue(name = "refresh_token", defaultValue = "") String refreshToken){
+  public ResponseEntity<Void> deleteRefreshToken(
+      HttpServletResponse response,
+      @CookieValue(name = "refresh_token", defaultValue = "") String refreshToken) {
     this.authenticationService.setRefreshTokenCookie(response, refreshToken, 0L);
 
     log.info("**/ Delete refresh token");

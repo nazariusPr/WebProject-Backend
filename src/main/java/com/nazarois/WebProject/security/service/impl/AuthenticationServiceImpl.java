@@ -8,7 +8,7 @@ import static com.nazarois.WebProject.constants.ExceptionMessageConstants.USER_N
 
 import com.nazarois.WebProject.dto.AuthenticateDto;
 import com.nazarois.WebProject.dto.TokenDto;
-import com.nazarois.WebProject.exception.InvalidTokenException;
+import com.nazarois.WebProject.exception.exceptions.InvalidTokenException;
 import com.nazarois.WebProject.model.EmailVerificationToken;
 import com.nazarois.WebProject.model.Role;
 import com.nazarois.WebProject.model.User;
@@ -31,6 +31,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +54,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private Long COOKIE_EXPIRATION;
 
   @Override
+  @Transactional
   public void register(AuthenticateDto request) {
     User user = createUser(request);
     EmailVerificationToken token = this.emailVerificationService.create(user);

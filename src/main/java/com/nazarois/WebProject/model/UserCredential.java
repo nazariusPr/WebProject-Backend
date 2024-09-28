@@ -23,10 +23,7 @@ public class UserCredential {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
-  
-  @Pattern(
-      regexp = "[A-Za-z\\d]{6,}",
-      message = "Must be minimum 6 symbols long, using digits and latin letters")
+
   @Column(name = "password", nullable = false)
   private String password;
 
