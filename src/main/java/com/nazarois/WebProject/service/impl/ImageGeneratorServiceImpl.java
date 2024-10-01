@@ -1,6 +1,6 @@
 package com.nazarois.WebProject.service.impl;
 
-import client.ImageGeneratorClient;
+import com.nazarois.WebProject.client.ImageGeneratorClient;
 import com.nazarois.WebProject.dto.Image.GenerateImageRequest;
 import com.nazarois.WebProject.dto.Image.GenerateImageResponse;
 import com.nazarois.WebProject.service.ImageGeneratorService;

@@ -1,4 +1,4 @@
-package client;
+package com.nazarois.WebProject.client;
 
 import com.nazarois.WebProject.config.ImageGeneratorConfig;
 import com.nazarois.WebProject.dto.Image.GenerateImageRequest;
