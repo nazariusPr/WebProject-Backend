@@ -6,8 +6,8 @@ import static com.nazarois.WebProject.constants.AppConstants.REFRESH_TOKEN_CLAIM
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.INVALID_TOKEN_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.USER_NOT_VERIFIED_MESSAGE;
 
-import com.nazarois.WebProject.dto.AuthenticateDto;
-import com.nazarois.WebProject.dto.TokenDto;
+import com.nazarois.WebProject.dto.authentication.AuthenticateDto;
+import com.nazarois.WebProject.dto.authentication.TokenDto;
 import com.nazarois.WebProject.exception.exceptions.InvalidTokenException;
 import com.nazarois.WebProject.model.EmailVerificationToken;
 import com.nazarois.WebProject.model.Role;

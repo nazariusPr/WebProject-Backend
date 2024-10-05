@@ -14,4 +14,12 @@ import lombok.NoArgsConstructor;
 public class GenerateImageResponse {
   private Long created;
   private List<GeneratedImage> data;
+
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+  public static class GeneratedImage {
+    private String b64Json;
+  }
 }

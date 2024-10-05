@@ -1,6 +1,6 @@
 package com.nazarois.WebProject.service;
 
-import com.nazarois.WebProject.dto.AuthenticateDto;
+import com.nazarois.WebProject.dto.authentication.AuthenticateDto;
 import com.nazarois.WebProject.model.Role;
 import com.nazarois.WebProject.model.User;
 

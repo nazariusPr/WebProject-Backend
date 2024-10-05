@@ -1,4 +1,4 @@
-package com.nazarois.WebProject.dto;
+package com.nazarois.WebProject.dto.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

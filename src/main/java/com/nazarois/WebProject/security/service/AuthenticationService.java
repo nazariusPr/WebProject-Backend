@@ -1,7 +1,7 @@
 package com.nazarois.WebProject.security.service;
 
-import com.nazarois.WebProject.dto.AuthenticateDto;
-import com.nazarois.WebProject.dto.TokenDto;
+import com.nazarois.WebProject.dto.authentication.AuthenticateDto;
+import com.nazarois.WebProject.dto.authentication.TokenDto;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.UUID;

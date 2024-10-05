@@ -3,7 +3,7 @@ package com.nazarois.WebProject.service.impl;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.USER_NOT_FOUND;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.WRONG_EMAIL_MESSAGE;
 
-import com.nazarois.WebProject.dto.AuthenticateDto;
+import com.nazarois.WebProject.dto.authentication.AuthenticateDto;
 import com.nazarois.WebProject.mapper.AuthenticationMapper;
 import com.nazarois.WebProject.model.Role;
 import com.nazarois.WebProject.model.User;

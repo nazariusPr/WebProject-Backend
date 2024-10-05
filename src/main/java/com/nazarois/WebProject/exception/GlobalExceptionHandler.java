@@ -1,6 +1,6 @@
 package com.nazarois.WebProject.exception;
 
-import com.nazarois.WebProject.dto.ExceptionResponse;
+import com.nazarois.WebProject.dto.exception.ExceptionResponse;
 import com.nazarois.WebProject.exception.exceptions.InvalidTokenException;
 import com.nazarois.WebProject.exception.exceptions.TokenExpirationException;
 import jakarta.persistence.EntityNotFoundException;
