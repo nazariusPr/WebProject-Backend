@@ -1,4 +1,6 @@
-package com.nazarois.WebProject.dto.image;
+package com.nazarois.WebProject.dto.action;
+
+import static com.nazarois.WebProject.constants.AppConstants.IMAGE_RESPONSE_FORMAT;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -10,13 +12,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.nazarois.WebProject.constants.AppConstants.IMAGE_RESPONSE_FORMAT;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class GenerateImageRequest {
+public class GenerateActionDto {
   @NotBlank private String prompt;
 
   @ValidSize private String size;

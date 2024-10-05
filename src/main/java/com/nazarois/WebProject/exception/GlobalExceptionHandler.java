@@ -1,6 +1,6 @@
 package com.nazarois.WebProject.exception;
 
-import com.nazarois.WebProject.dto.exception.ExceptionResponse;
+import com.nazarois.WebProject.dto.exception.ExceptionDto;
 import com.nazarois.WebProject.exception.exceptions.InvalidTokenException;
 import com.nazarois.WebProject.exception.exceptions.TokenExpirationException;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,10 +32,10 @@ public class GlobalExceptionHandler {
     DataIntegrityViolationException.class
   })
   public final ResponseEntity<?> handleBadRequestException(WebRequest request) {
-    ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+    ExceptionDto exceptionDto = new ExceptionDto(getErrorAttributes(request));
 
-    log.warn(exceptionResponse.getMessage(), exceptionResponse);
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    log.warn(exceptionDto.getMessage(), exceptionDto);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionDto);
   }
 
   @ExceptionHandler({
@@ -44,18 +44,18 @@ public class GlobalExceptionHandler {
     InvalidTokenException.class
   })
   public final ResponseEntity<?> handleForbiddenException(WebRequest request) {
-    ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+    ExceptionDto exceptionDto = new ExceptionDto(getErrorAttributes(request));
 
-    log.warn(exceptionResponse.getMessage(), exceptionResponse);
-    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse);
+    log.warn(exceptionDto.getMessage(), exceptionDto);
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionDto);
   }
 
   @ExceptionHandler({EntityNotFoundException.class})
   public final ResponseEntity<?> handleNotFoundException(WebRequest request) {
-    ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+    ExceptionDto exceptionDto = new ExceptionDto(getErrorAttributes(request));
 
-    log.warn(exceptionResponse.getMessage(), exceptionResponse);
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+    log.warn(exceptionDto.getMessage(), exceptionDto);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionDto);
   }
 
   private Map<String, Object> getErrorAttributes(WebRequest webRequest) {
