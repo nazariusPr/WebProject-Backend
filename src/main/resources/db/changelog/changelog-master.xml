@@ -10,4 +10,6 @@
     <include file="db/changelog/changelogs/ch-create-email-verification-token-table.xml"/>
     <include file="db/changelog/changelogs/ch-add-column-is-verified-to-user-table.xml"/>
     <include file="/db/changelog/changelogs/ch-add-records-into-roles-table.xml"/>
+    <include file="db/changelog/changelogs/ch-create-action-table.xml"/>
+    <include file="db/changelog/changelogs/ch-create-image-table.xml"/>
 </databaseChangeLog>
