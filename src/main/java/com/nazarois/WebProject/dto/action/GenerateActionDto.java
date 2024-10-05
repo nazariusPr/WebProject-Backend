@@ -1,5 +1,7 @@
 package com.nazarois.WebProject.dto.action;
 
+import static com.nazarois.WebProject.constants.AppConstants.IMAGE_RESPONSE_FORMAT;
+
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.nazarois.WebProject.annotation.ValidSize;
@@ -22,4 +24,6 @@ public class GenerateActionDto {
   @Min(1)
   @Max(10)
   private int numImages;
+
+  private final String responseFormat = IMAGE_RESPONSE_FORMAT;
 }

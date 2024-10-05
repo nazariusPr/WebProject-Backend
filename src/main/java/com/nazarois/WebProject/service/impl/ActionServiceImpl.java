@@ -4,6 +4,7 @@ import com.nazarois.WebProject.dto.action.ActionDto;
 import com.nazarois.WebProject.dto.action.GenerateActionDto;
 import com.nazarois.WebProject.mapper.ActionMapper;
 import com.nazarois.WebProject.model.Action;
+import com.nazarois.WebProject.model.Image;
 import com.nazarois.WebProject.model.enums.ActionStatus;
 import com.nazarois.WebProject.model.enums.ActionType;
 import com.nazarois.WebProject.repository.ActionRepository;
@@ -31,8 +32,10 @@ public class ActionServiceImpl implements ActionService {
     Action action = repository.save(buildInitialGenerateAction(email));
 
     List<String> generatedImages = imageGeneratorService.generateImage(generateActionDto);
-    imageService.create(generatedImages, generateActionDto.getPrompt(), action);
+    List<Image> images =
+        imageService.create(generatedImages, generateActionDto.getPrompt(), action);
     action.setActionStatus(ActionStatus.FINISHED);
+    action.setImages(images);
 
     return mapper.actionToActionDto(repository.save(action));
   }
