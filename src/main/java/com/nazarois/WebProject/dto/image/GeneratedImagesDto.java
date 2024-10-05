@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class GenerateImageResponse {
+public class GeneratedImagesDto {
   private Long created;
   private List<GeneratedImage> data;
 
