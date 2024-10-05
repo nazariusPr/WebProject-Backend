@@ -1,7 +1,8 @@
-package com.nazarois.WebProject.dto.Image;
+package com.nazarois.WebProject.dto.image;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class GeneratedImage {
-  private String b64Json;
-  ;
+public class GenerateImageResponse {
+  private Long created;
+  private List<GeneratedImage> data;
 }

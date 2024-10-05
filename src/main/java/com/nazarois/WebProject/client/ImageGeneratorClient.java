@@ -1,8 +1,8 @@
 package com.nazarois.WebProject.client;
 
 import com.nazarois.WebProject.config.ImageGeneratorConfig;
-import com.nazarois.WebProject.dto.Image.GenerateImageRequest;
-import com.nazarois.WebProject.dto.Image.GenerateImageResponse;
+import com.nazarois.WebProject.dto.image.GenerateImageRequest;
+import com.nazarois.WebProject.dto.image.GenerateImageResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

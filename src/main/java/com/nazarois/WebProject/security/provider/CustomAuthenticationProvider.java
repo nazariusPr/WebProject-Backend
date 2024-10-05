@@ -1,7 +1,7 @@
 package com.nazarois.WebProject.security.provider;
 
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.BAD_CREDENTIALS_MESSAGE;
-import static com.nazarois.WebProject.util.SecurityUtil.getUserAuthorities;
+import static com.nazarois.WebProject.util.SecurityUtils.getUserAuthorities;
 
 import com.nazarois.WebProject.model.User;
 import com.nazarois.WebProject.model.UserCredential;

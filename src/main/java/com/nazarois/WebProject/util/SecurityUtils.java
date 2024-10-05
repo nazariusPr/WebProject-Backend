@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service("securityUtils")
 @AllArgsConstructor
-public class SecurityUtil {
+public class SecurityUtils {
   private final UserService userService;
 
   public static List<GrantedAuthority> getUserAuthorities(User user) {

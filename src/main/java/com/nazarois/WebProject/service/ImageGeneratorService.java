@@ -1,8 +1,11 @@
 package com.nazarois.WebProject.service;
 
-import com.nazarois.WebProject.dto.Image.GenerateImageRequest;
-import com.nazarois.WebProject.dto.Image.GenerateImageResponse;
+import com.nazarois.WebProject.dto.image.GenerateImageRequest;
+import com.nazarois.WebProject.dto.image.GenerateImageResponse;
+import com.nazarois.WebProject.dto.image.Image;
+
+import java.util.List;
 
 public interface ImageGeneratorService {
-  GenerateImageResponse generateImage(GenerateImageRequest generateImageRequest);
+  List<Image> generateImage(GenerateImageRequest generateImageRequest);
 }

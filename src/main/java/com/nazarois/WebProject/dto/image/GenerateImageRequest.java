@@ -1,4 +1,4 @@
-package com.nazarois.WebProject.dto.Image;
+package com.nazarois.WebProject.dto.image;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
