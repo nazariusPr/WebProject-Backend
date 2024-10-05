@@ -1,4 +1,4 @@
-package com.nazarois.WebProject.dto;
+package com.nazarois.WebProject.dto.authentication;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

@@ -2,8 +2,8 @@ package com.nazarois.WebProject.security.controller;
 
 import static com.nazarois.WebProject.constants.AppConstants.AUTH_LINK;
 
-import com.nazarois.WebProject.dto.AuthenticateDto;
-import com.nazarois.WebProject.dto.TokenDto;
+import com.nazarois.WebProject.dto.authentication.AuthenticateDto;
+import com.nazarois.WebProject.dto.authentication.TokenDto;
 import com.nazarois.WebProject.security.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ValidationException;
