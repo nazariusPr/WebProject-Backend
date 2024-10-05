@@ -34,6 +34,7 @@ public class ImageGeneratorController {
           Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
     }
 
-    return ResponseEntity.ok(imageGeneratorService.generateImage(request));
+    //return ResponseEntity.ok(imageGeneratorService.generateImage(request));
+    return null;
   }
 }
