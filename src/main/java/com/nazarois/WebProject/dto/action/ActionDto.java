@@ -22,5 +22,5 @@ public class ActionDto {
   private ActionType actionType;
   private ActionStatus actionStatus;
   private LocalDateTime createdAt;
-  private List<ImageDto> imageDto;
+  private List<ImageDto> images;
 }
