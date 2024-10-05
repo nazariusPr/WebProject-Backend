@@ -1,13 +1,11 @@
 package com.nazarois.WebProject.controller;
 
-import static com.nazarois.WebProject.constants.AppConstants.IMAGE_LINK;
-
+import com.nazarois.WebProject.dto.action.ActionDto;
+import com.nazarois.WebProject.dto.action.GenerateActionDto;
 import com.nazarois.WebProject.dto.image.GenerateImageRequest;
 import com.nazarois.WebProject.dto.image.ImageDto;
-import com.nazarois.WebProject.service.ImageGeneratorService;
+import com.nazarois.WebProject.service.ActionService;
 import jakarta.validation.ValidationException;
-import java.util.List;
-import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,23 +16,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+import java.util.List;
+import java.util.Objects;
+
+import static com.nazarois.WebProject.constants.AppConstants.ACTION_LINK;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping(IMAGE_LINK)
-public class ImageGeneratorController {
-  private final ImageGeneratorService imageGeneratorService;
+@RequestMapping(ACTION_LINK)
+public class ActionController {
+  private final ActionService actionService;
 
-  @PostMapping("/generate")
-  public ResponseEntity<List<ImageDto>> generateImage(
-      @Validated @RequestBody GenerateImageRequest request, BindingResult result) {
+  @PostMapping("/generate-image")
+  public ResponseEntity<ActionDto> generateImage(
+      @Validated @RequestBody GenerateActionDto request,
+      BindingResult result,
+      Principal principal) {
     if (result.hasErrors()) {
       log.error("**/ Bad request to generate image");
       throw new ValidationException(
           Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
     }
 
-    //return ResponseEntity.ok(imageGeneratorService.generateImage(request));
-    return null;
+    return ResponseEntity.ok(actionService.generate(request, principal.getName()));
   }
 }

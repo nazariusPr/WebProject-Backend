@@ -6,7 +6,7 @@ public class AppConstants {
   public static final String REFRESH_TOKEN = "refresh_token";
   public static final String REFRESH_TOKEN_CLAIM = "custom:is_refresh_token";
   public static final String AUTH_LINK = "/api/v1/auth";
-  public static final String IMAGE_LINK = "/api/v1/image";
+  public static final String ACTION_LINK = "/api/v1/action";
   public static final String SMALL_IMAGE_SIZE = "256x256";
   public static final String MEDIUM_IMAGE_SIZE = "512x512";
   public static final String LARGE_IMAGE_SIZE = "1024x1024";

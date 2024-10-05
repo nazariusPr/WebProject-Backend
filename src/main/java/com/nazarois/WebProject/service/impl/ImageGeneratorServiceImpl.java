@@ -7,7 +7,6 @@ import com.nazarois.WebProject.dto.action.GenerateActionDto;
 import com.nazarois.WebProject.dto.image.GenerateImageResponse;
 import com.nazarois.WebProject.service.ImageGeneratorService;
 import com.nazarois.WebProject.service.ImageStorageService;
-import com.nazarois.WebProject.util.ImageUtils;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ public class ImageGeneratorServiceImpl implements ImageGeneratorService {
 
   private final ImageGeneratorClient imageGeneratorClient;
   private final ImageStorageService imageStorageService;
-  private final ImageUtils imageUtils;
 
   public List<String> generateImage(GenerateActionDto generateActionDto) {
     GenerateImageResponse response = imageGeneratorClient.generateImage(generateActionDto);
