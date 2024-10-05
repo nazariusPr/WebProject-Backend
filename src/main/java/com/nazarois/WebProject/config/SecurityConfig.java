@@ -51,7 +51,9 @@ public class SecurityConfig {
                       return config;
                     }))
         .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(auth -> auth.requestMatchers(AUTH_LINK + "/**").permitAll())
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers(AUTH_LINK + "/**").permitAll().anyRequest().authenticated())
         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(this.authenticationProvider)
         .addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class);
