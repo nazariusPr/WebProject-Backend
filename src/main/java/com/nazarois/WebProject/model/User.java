@@ -12,9 +12,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -42,6 +45,9 @@ public class User {
 
   @Column(name = "is_verified")
   private boolean isVerified;
+
+  @OneToMany(mappedBy = "user")
+  private List<Action> actions;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
