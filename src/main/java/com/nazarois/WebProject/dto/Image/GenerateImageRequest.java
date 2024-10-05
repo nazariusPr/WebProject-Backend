@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.nazarois.WebProject.constants.AppConstants.IMAGE_RESPONSE_FORMAT;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,4 +24,6 @@ public class GenerateImageRequest {
   @Min(1)
   @Max(10)
   private int numImages;
+
+  private final String responseFormat = IMAGE_RESPONSE_FORMAT;
 }

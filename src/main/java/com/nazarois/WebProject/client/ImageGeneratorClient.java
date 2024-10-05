@@ -14,5 +14,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface ImageGeneratorClient {
 
   @PostMapping(value = "/v1/images/generations")
-  GenerateImageResponse generateImage(@RequestBody final GenerateImageRequest request);
+  GenerateImageResponse generateImage(@RequestBody GenerateImageRequest request);
 }

@@ -1,5 +1,9 @@
 package com.nazarois.WebProject.validator;
 
+import static com.nazarois.WebProject.constants.AppConstants.LARGE_IMAGE_SIZE;
+import static com.nazarois.WebProject.constants.AppConstants.MEDIUM_IMAGE_SIZE;
+import static com.nazarois.WebProject.constants.AppConstants.SMALL_IMAGE_SIZE;
+
 import com.nazarois.WebProject.annotation.ValidSize;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -8,7 +12,8 @@ import java.util.List;
 
 public class SizeValidator implements ConstraintValidator<ValidSize, String> {
 
-  private static final List<String> validSizes = Arrays.asList("1024x1024", "512x512", "256x256");
+  private final List<String> validSizes =
+      Arrays.asList(SMALL_IMAGE_SIZE, MEDIUM_IMAGE_SIZE, LARGE_IMAGE_SIZE);
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {

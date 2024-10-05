@@ -13,7 +13,7 @@ public class ImageGeneratorServiceImpl implements ImageGeneratorService {
 
   private final ImageGeneratorClient imageGeneratorClient;
 
-  public GenerateImageResponse generateImage(final GenerateImageRequest request) {
+  public GenerateImageResponse generateImage(GenerateImageRequest request) {
     return imageGeneratorClient.generateImage(request);
   }
 }
