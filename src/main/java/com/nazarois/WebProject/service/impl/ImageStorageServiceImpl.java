@@ -1,5 +1,6 @@
 package com.nazarois.WebProject.service.impl;
 
+import static com.nazarois.WebProject.constants.AppConstants.IMAGE_CONTENT_TYPE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.FILE_DELETING_ERROR_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.FILE_UPLOADING_ERROR_MESSAGE;
 
@@ -32,7 +33,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     try (ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes)) {
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentLength(imageBytes.length);
-      metadata.setContentType("image/png");
+      metadata.setContentType(IMAGE_CONTENT_TYPE);
 
       PutObjectRequest putObjectRequest =
           new PutObjectRequest(bucketName, fileName, inputStream, metadata);
