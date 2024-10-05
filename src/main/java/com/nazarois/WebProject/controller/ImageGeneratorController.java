@@ -3,7 +3,7 @@ package com.nazarois.WebProject.controller;
 import static com.nazarois.WebProject.constants.AppConstants.IMAGE_LINK;
 
 import com.nazarois.WebProject.dto.image.GenerateImageRequest;
-import com.nazarois.WebProject.dto.image.Image;
+import com.nazarois.WebProject.dto.image.ImageDto;
 import com.nazarois.WebProject.service.ImageGeneratorService;
 import jakarta.validation.ValidationException;
 import java.util.List;
@@ -26,7 +26,7 @@ public class ImageGeneratorController {
   private final ImageGeneratorService imageGeneratorService;
 
   @PostMapping("/generate")
-  public ResponseEntity<List<Image>> generateImage(
+  public ResponseEntity<List<ImageDto>> generateImage(
       @Validated @RequestBody GenerateImageRequest request, BindingResult result) {
     if (result.hasErrors()) {
       log.error("**/ Bad request to generate image");

@@ -1,6 +1,6 @@
 package com.nazarois.WebProject.model.enums;
 
-public enum ImageType {
-  PROCESSED,
+public enum ActionType {
+  ANALYZED,
   GENERATED
 }
