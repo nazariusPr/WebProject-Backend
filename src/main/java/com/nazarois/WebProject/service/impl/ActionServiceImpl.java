@@ -8,6 +8,7 @@ import com.nazarois.WebProject.model.Image;
 import com.nazarois.WebProject.model.enums.ActionStatus;
 import com.nazarois.WebProject.model.enums.ActionType;
 import com.nazarois.WebProject.repository.ActionRepository;
+import com.nazarois.WebProject.security.service.AsyncService;
 import com.nazarois.WebProject.service.ActionService;
 import com.nazarois.WebProject.service.ImageGeneratorService;
 import com.nazarois.WebProject.service.ImageService;
@@ -21,23 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class ActionServiceImpl implements ActionService {
   private final UserService userService;
-  private final ImageService imageService;
-  private final ImageGeneratorService imageGeneratorService;
+  private final AsyncService asyncService;
   private final ActionRepository repository;
   private final ActionMapper mapper;
 
   @Override
-  @Transactional
   public ActionDto generate(GenerateActionDto generateActionDto, String email) {
     Action action = repository.save(buildInitialGenerateAction(email));
+    asyncService.generate(action, generateActionDto);
 
-    List<String> generatedImages = imageGeneratorService.generateImage(generateActionDto);
-    List<Image> images =
-        imageService.create(generatedImages, generateActionDto.getPrompt(), action);
-    action.setActionStatus(ActionStatus.FINISHED);
-    action.setImages(images);
-
-    return mapper.actionToActionDto(repository.save(action));
+    return mapper.actionToActionDto(action);
   }
 
   private Action buildInitialGenerateAction(String email) {
