@@ -117,7 +117,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .maxAge(maxAge)
             .httpOnly(true)
             .secure(false)
-            .sameSite("None")
             .build();
 
     response.addHeader("Set-Cookie", cookie.toString());
