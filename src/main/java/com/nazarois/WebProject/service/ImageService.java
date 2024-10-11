@@ -8,4 +8,6 @@ public interface ImageService {
   Image create(String fileName, String text, Action action);
 
   List<Image> create(List<String> fileNames, String text, Action action);
+  void delete(Image image);
+  void delete(List<Image> images);
 }

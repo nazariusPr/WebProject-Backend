@@ -26,6 +26,16 @@ public class ImageServiceImpl implements ImageService {
     return repository.saveAll(images);
   }
 
+  @Override
+  public void delete(Image image) {
+    repository.delete(image);
+  }
+
+  @Override
+  public void delete(List<Image> images) {
+    images.forEach(this::delete);
+  }
+
   private Image buildImage(String fileName, String text, Action action) {
     return Image.builder().fileName(fileName).text(text).action(action).build();
   }

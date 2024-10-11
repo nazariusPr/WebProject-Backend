@@ -20,6 +20,13 @@ public class ImageGeneratorServiceImpl implements ImageGeneratorService {
 
   public List<String> generateImage(GenerateActionDto generateActionDto) {
     GeneratedImagesDto response = imageGeneratorClient.generateImage(generateActionDto);
+
+    for (int i = 0; i < 10_000; ++i) {
+      for (int j = 0; j < 10_000; ++j) {
+        // simulator of action
+      }
+    }
+
     return uploadImages(response);
   }
 
@@ -28,6 +35,6 @@ public class ImageGeneratorServiceImpl implements ImageGeneratorService {
         generatedImagesDto.getData().stream()
             .map(image -> convertBase64ToString(image.getB64Json()))
             .toList();
-    return imageStorageService.uploadMultipleImages(images);
+    return imageStorageService.uploadImage(images);
   }
 }
