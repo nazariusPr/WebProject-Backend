@@ -29,7 +29,8 @@ public class ActionServiceImpl implements ActionService {
 
   @Override
   public ActionDto generate(GenerateActionDto generateActionDto, String email) {
-    Action action = repository.save(buildInitialGenerateAction(email));
+    Action action =
+        repository.save(buildInitialGenerateAction(email, generateActionDto.getPrompt()));
     asyncService.generate(action, generateActionDto);
 
     return mapper.actionToActionDto(action);
@@ -55,8 +56,9 @@ public class ActionServiceImpl implements ActionService {
         .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_MESSAGE));
   }
 
-  private Action buildInitialGenerateAction(String email) {
+  private Action buildInitialGenerateAction(String email, String text) {
     return Action.builder()
+        .text(text)
         .actionType(ActionType.GENERATED)
         .actionStatus(ActionStatus.INPROGRESS)
         .user(userService.findUserByEmail(email))

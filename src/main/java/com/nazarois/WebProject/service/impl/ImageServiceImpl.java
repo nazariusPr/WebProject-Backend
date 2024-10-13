@@ -14,15 +14,14 @@ public class ImageServiceImpl implements ImageService {
   private final ImageRepository repository;
 
   @Override
-  public Image create(String fileName, String text, Action action) {
-    Image image = buildImage(fileName, text, action);
+  public Image create(String fileName, Action action) {
+    Image image = buildImage(fileName, action);
     return repository.save(image);
   }
 
   @Override
-  public List<Image> create(List<String> fileNames, String text, Action action) {
-    List<Image> images =
-        fileNames.stream().map(fileName -> buildImage(fileName, text, action)).toList();
+  public List<Image> create(List<String> fileNames, Action action) {
+    List<Image> images = fileNames.stream().map(fileName -> buildImage(fileName, action)).toList();
     return repository.saveAll(images);
   }
 
@@ -36,7 +35,7 @@ public class ImageServiceImpl implements ImageService {
     images.forEach(this::delete);
   }
 
-  private Image buildImage(String fileName, String text, Action action) {
-    return Image.builder().fileName(fileName).text(text).action(action).build();
+  private Image buildImage(String fileName, Action action) {
+    return Image.builder().fileName(fileName).action(action).build();
   }
 }

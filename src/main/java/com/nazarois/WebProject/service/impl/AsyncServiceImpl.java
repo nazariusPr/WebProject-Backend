@@ -75,8 +75,7 @@ public class AsyncServiceImpl implements AsyncService {
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
     }
 
-    List<Image> images =
-        imageService.create(generatedImages, generateActionDto.getPrompt(), action);
+    List<Image> images = imageService.create(generatedImages, action);
     simulateTask();
 
     if (task.isCancelled()) {

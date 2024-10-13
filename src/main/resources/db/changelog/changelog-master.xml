@@ -12,4 +12,6 @@
     <include file="/db/changelog/changelogs/ch-add-records-into-roles-table.xml"/>
     <include file="db/changelog/changelogs/ch-create-action-table.xml"/>
     <include file="db/changelog/changelogs/ch-create-image-table.xml"/>
+    <include file="db/changelog/changelogs/ch-add-column-text-to-action-table.xml"/>
+    <include file="db/changelog/changelogs/ch-remove-column-text-from-image.xml"/>
 </databaseChangeLog>
