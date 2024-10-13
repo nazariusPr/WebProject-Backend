@@ -3,7 +3,7 @@ package com.nazarois.WebProject.service.impl;
 import static com.nazarois.WebProject.util.Convertor.convertBase64ToString;
 
 import com.nazarois.WebProject.client.ImageGeneratorClient;
-import com.nazarois.WebProject.dto.action.GenerateActionDto;
+import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.image.GeneratedImagesDto;
 import com.nazarois.WebProject.service.ImageGeneratorService;
 import com.nazarois.WebProject.service.ImageStorageService;
@@ -18,8 +18,8 @@ public class ImageGeneratorServiceImpl implements ImageGeneratorService {
   private final ImageGeneratorClient imageGeneratorClient;
   private final ImageStorageService imageStorageService;
 
-  public List<String> generateImage(GenerateActionDto generateActionDto) {
-    GeneratedImagesDto response = imageGeneratorClient.generateImage(generateActionDto);
+  public List<String> generateImage(ActionRequestDto actionRequestDto) {
+    GeneratedImagesDto response = imageGeneratorClient.generateImage(actionRequestDto);
     return uploadImages(response);
   }
 

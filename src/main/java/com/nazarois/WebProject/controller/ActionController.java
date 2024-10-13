@@ -4,7 +4,7 @@ import static com.nazarois.WebProject.constants.AppConstants.ACTION_LINK;
 
 import com.nazarois.WebProject.dto.action.ActionDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
-import com.nazarois.WebProject.dto.action.GenerateActionDto;
+import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.service.ActionService;
 import jakarta.validation.ValidationException;
@@ -17,8 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,7 +46,7 @@ public class ActionController {
 
   @PostMapping("/generate-image")
   public ResponseEntity<ActionDto> generateImage(
-      @Validated @RequestBody GenerateActionDto request,
+      @Validated @RequestBody ActionRequestDto request,
       BindingResult result,
       Principal principal) {
     if (result.hasErrors()) {
@@ -58,7 +58,7 @@ public class ActionController {
     return ResponseEntity.ok(actionService.generate(request, principal.getName()));
   }
 
-  @DeleteMapping("/cancel/{actionId}")
+  @PatchMapping("/cancel/{actionId}")
   public ResponseEntity<ActionDto> cancelAction(@PathVariable UUID actionId) {
     log.info("**/ Cancelling action");
     return ResponseEntity.ok(actionService.cancel(actionId));

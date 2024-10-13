@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -48,6 +49,9 @@ public class Action {
 
   @Column(name = "text")
   private String text;
+
+  @OneToOne(mappedBy = "action")
+  private ActionRequest actionRequest;
 
   @OneToMany(mappedBy = "action")
   private List<Image> images;

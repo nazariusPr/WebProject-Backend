@@ -3,7 +3,7 @@ package com.nazarois.WebProject.service.impl;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_CANCELLATION_MESSAGE;
 
 import com.nazarois.WebProject.dto.action.DetailActionDto;
-import com.nazarois.WebProject.dto.action.GenerateActionDto;
+import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.mapper.ActionMapper;
 import com.nazarois.WebProject.model.Action;
 import com.nazarois.WebProject.model.Image;
@@ -36,12 +36,12 @@ public class AsyncServiceImpl implements AsyncService {
   private final ConcurrentHashMap<UUID, Future<DetailActionDto>> ongoingTasks = new ConcurrentHashMap<>();
 
   @Override
-  public void generate(Action action, GenerateActionDto generateActionDto) {
+  public void generate(Action action, ActionRequestDto actionRequestDto) {
     Future<DetailActionDto> futureTask =
         executorService.submit(
             () -> {
               try {
-                return doGenerateAction(action, generateActionDto);
+                return doGenerateAction(action, actionRequestDto);
               } finally {
                 ongoingTasks.remove(action.getId());
               }
@@ -57,7 +57,7 @@ public class AsyncServiceImpl implements AsyncService {
     }
   }
 
-  private DetailActionDto doGenerateAction(Action action, GenerateActionDto generateActionDto)
+  private DetailActionDto doGenerateAction(Action action, ActionRequestDto actionRequestDto)
       throws InterruptedException {
     Future<DetailActionDto> task = ongoingTasks.get(action.getId());
 
@@ -65,7 +65,7 @@ public class AsyncServiceImpl implements AsyncService {
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
     }
 
-    List<String> generatedImages = imageGeneratorService.generateImage(generateActionDto);
+    List<String> generatedImages = imageGeneratorService.generateImage(actionRequestDto);
     simulateTask();
 
     if (task.isCancelled()) {

@@ -6,14 +6,16 @@ import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY
 
 import com.nazarois.WebProject.dto.action.ActionDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
-import com.nazarois.WebProject.dto.action.GenerateActionDto;
+import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.exception.exceptions.BadRequestException;
 import com.nazarois.WebProject.mapper.ActionMapper;
 import com.nazarois.WebProject.model.Action;
+import com.nazarois.WebProject.model.ActionRequest;
 import com.nazarois.WebProject.model.enums.ActionStatus;
 import com.nazarois.WebProject.model.enums.ActionType;
 import com.nazarois.WebProject.repository.ActionRepository;
+import com.nazarois.WebProject.repository.ActionRequestRepository;
 import com.nazarois.WebProject.service.ActionService;
 import com.nazarois.WebProject.service.AsyncService;
 import com.nazarois.WebProject.service.UserService;
@@ -30,6 +32,7 @@ public class ActionServiceImpl implements ActionService {
   private final UserService userService;
   private final AsyncService asyncService;
   private final ActionRepository repository;
+  private final ActionRequestRepository actionRequestRepository;
   private final ActionMapper mapper;
 
   @Override
@@ -48,10 +51,11 @@ public class ActionServiceImpl implements ActionService {
   }
 
   @Override
-  public ActionDto generate(GenerateActionDto generateActionDto, String email) {
+  public ActionDto generate(ActionRequestDto actionRequestDto, String email) {
     Action action =
-        repository.save(buildInitialGenerateAction(email, generateActionDto.getPrompt()));
-    asyncService.generate(action, generateActionDto);
+        repository.save(buildInitialGenerateAction(email, actionRequestDto.getPrompt()));
+    saveActionRequest(action, actionRequestDto);
+    asyncService.generate(action, actionRequestDto);
 
     return mapper.actionToActionDto(action);
   }
@@ -68,6 +72,13 @@ public class ActionServiceImpl implements ActionService {
 
     action.setActionStatus(ActionStatus.CANCELLED);
     return mapper.actionToActionDto(repository.save(action));
+  }
+
+  @Override
+  public ActionDto restart(UUID actionId) {
+    Action action = findById(actionId);
+
+    return null;
   }
 
   private Action findById(UUID actionId) {
@@ -91,5 +102,11 @@ public class ActionServiceImpl implements ActionService {
         page.getNumber(),
         page.getTotalElements(),
         page.getTotalPages());
+  }
+
+  private void saveActionRequest(Action action, ActionRequestDto actionRequestDto) {
+    ActionRequest actionRequest = mapper.actionRequestDtoToActionRequest(actionRequestDto);
+    actionRequest.setAction(action);
+    actionRequestRepository.save(actionRequest);
   }
 }

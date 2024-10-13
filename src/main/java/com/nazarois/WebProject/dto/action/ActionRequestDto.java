@@ -2,6 +2,7 @@ package com.nazarois.WebProject.dto.action;
 
 import static com.nazarois.WebProject.constants.AppConstants.IMAGE_RESPONSE_FORMAT;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.nazarois.WebProject.annotation.ValidSize;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class GenerateActionDto {
+public class ActionRequestDto {
   @NotBlank private String prompt;
 
   @ValidSize private String size;
@@ -25,5 +26,5 @@ public class GenerateActionDto {
   @Max(10)
   private int numImages;
 
-  private final String responseFormat = IMAGE_RESPONSE_FORMAT;
+  @JsonIgnore private final String responseFormat = IMAGE_RESPONSE_FORMAT;
 }
