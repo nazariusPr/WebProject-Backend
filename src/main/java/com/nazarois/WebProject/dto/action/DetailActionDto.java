@@ -2,22 +2,19 @@ package com.nazarois.WebProject.dto.action;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.nazarois.WebProject.model.enums.ActionStatus;
-import com.nazarois.WebProject.model.enums.ActionType;
+import com.nazarois.WebProject.dto.image.ImageDto;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ActionDto {
-    private UUID id;
-    private ActionType actionType;
-    private ActionStatus actionStatus;
-    private LocalDateTime createdAt;
+public class DetailActionDto extends ActionDto{
+  private String text;
+  private List<ImageDto> images;
 }
