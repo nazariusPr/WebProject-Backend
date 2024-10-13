@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class DetailActionDto extends ActionDto{
-  private String text;
+public class DetailActionDto extends ActionDto {
+  private ActionRequestDto actionRequest;
   private List<ImageDto> images;
 }

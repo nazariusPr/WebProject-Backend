@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="12" author="Nazar Prots">
+        <createTable tableName="action_requests">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="size" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="prompt" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_number" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="action_requests"
+                baseColumnNames="action_id"
+                referencedTableName="actions"
+                referencedColumnNames="id"
+                constraintName="fk_action_action_request"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

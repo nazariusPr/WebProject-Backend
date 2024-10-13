@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class GenerateActionDto {
+public class ActionRequestDto {
   @NotBlank private String prompt;
 
   @ValidSize private String size;

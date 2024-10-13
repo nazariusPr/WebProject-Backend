@@ -1,19 +1,22 @@
 package com.nazarois.WebProject.service.impl;
 
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_CANCELLATION_BAD_REQUEST_MESSAGE;
-import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_IS_NOT_FINISHED;
+import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_IS_NOT_CANCELLED_MESSAGE;
+import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_IS_NOT_FINISHED_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY_NOT_FOUND_MESSAGE;
 
 import com.nazarois.WebProject.dto.action.ActionDto;
+import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
-import com.nazarois.WebProject.dto.action.GenerateActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.exception.exceptions.BadRequestException;
 import com.nazarois.WebProject.mapper.ActionMapper;
 import com.nazarois.WebProject.model.Action;
+import com.nazarois.WebProject.model.ActionRequest;
 import com.nazarois.WebProject.model.enums.ActionStatus;
 import com.nazarois.WebProject.model.enums.ActionType;
 import com.nazarois.WebProject.repository.ActionRepository;
+import com.nazarois.WebProject.repository.ActionRequestRepository;
 import com.nazarois.WebProject.service.ActionService;
 import com.nazarois.WebProject.service.AsyncService;
 import com.nazarois.WebProject.service.UserService;
@@ -30,13 +33,14 @@ public class ActionServiceImpl implements ActionService {
   private final UserService userService;
   private final AsyncService asyncService;
   private final ActionRepository repository;
+  private final ActionRequestRepository actionRequestRepository;
   private final ActionMapper mapper;
 
   @Override
   public DetailActionDto read(UUID actionId) {
     Action action = findById(actionId);
     if (!action.getActionStatus().equals(ActionStatus.FINISHED)) {
-      throw new BadRequestException(ACTION_IS_NOT_FINISHED);
+      throw new BadRequestException(ACTION_IS_NOT_FINISHED_MESSAGE);
     }
     return mapper.actionToDetailActionDto(action);
   }
@@ -48,10 +52,11 @@ public class ActionServiceImpl implements ActionService {
   }
 
   @Override
-  public ActionDto generate(GenerateActionDto generateActionDto, String email) {
+  public ActionDto generate(ActionRequestDto actionRequestDto, String email) {
     Action action =
-        repository.save(buildInitialGenerateAction(email, generateActionDto.getPrompt()));
-    asyncService.generate(action, generateActionDto);
+        repository.save(buildInitialGenerateAction(email, actionRequestDto.getPrompt()));
+    saveActionRequest(action, actionRequestDto);
+    asyncService.generate(action, actionRequestDto);
 
     return mapper.actionToActionDto(action);
   }
@@ -70,6 +75,22 @@ public class ActionServiceImpl implements ActionService {
     return mapper.actionToActionDto(repository.save(action));
   }
 
+  @Override
+  public ActionDto restart(UUID actionId) {
+    Action action = findById(actionId);
+    if (!action.getActionStatus().equals(ActionStatus.CANCELLED)) {
+      throw new BadRequestException(ACTION_IS_NOT_CANCELLED_MESSAGE);
+    }
+
+    ActionDto actionDto = null;
+    if (action.getActionType().equals(ActionType.GENERATED)) {
+      actionDto = restartGenerateAction(action);
+    } else {
+      // to do
+    }
+    return actionDto;
+  }
+
   private Action findById(UUID actionId) {
     return repository
         .findById(actionId)
@@ -78,7 +99,6 @@ public class ActionServiceImpl implements ActionService {
 
   private Action buildInitialGenerateAction(String email, String text) {
     return Action.builder()
-        .text(text)
         .actionType(ActionType.GENERATED)
         .actionStatus(ActionStatus.INPROGRESS)
         .user(userService.findUserByEmail(email))
@@ -91,5 +111,20 @@ public class ActionServiceImpl implements ActionService {
         page.getNumber(),
         page.getTotalElements(),
         page.getTotalPages());
+  }
+
+  private void saveActionRequest(Action action, ActionRequestDto actionRequestDto) {
+    ActionRequest actionRequest = mapper.actionRequestDtoToActionRequest(actionRequestDto);
+    actionRequest.setAction(action);
+    actionRequestRepository.save(actionRequest);
+  }
+
+  private ActionDto restartGenerateAction(Action action) {
+    action.setActionStatus(ActionStatus.INPROGRESS);
+    ActionRequestDto actionRequestDto =
+        mapper.actionRequestToActionRequestDto(action.getActionRequest());
+    asyncService.generate(action, actionRequestDto);
+
+    return mapper.actionToActionDto(repository.save(action));
   }
 }

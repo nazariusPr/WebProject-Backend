@@ -15,5 +15,6 @@ public class ExceptionMessageConstants {
   public static final String ACTION_CANCELLATION_MESSAGE = "Action was cancelled";
   public static final String ACTION_CANCELLATION_BAD_REQUEST_MESSAGE =
       "Action is already finished or cancelled";
-  public static final String ACTION_IS_NOT_FINISHED = "Action is not finished";
+  public static final String ACTION_IS_NOT_FINISHED_MESSAGE = "Action is not finished";
+  public static final String ACTION_IS_NOT_CANCELLED_MESSAGE = "Action is not cancelled";
 }

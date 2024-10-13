@@ -14,4 +14,6 @@
     <include file="db/changelog/changelogs/ch-create-image-table.xml"/>
     <include file="db/changelog/changelogs/ch-add-column-text-to-action-table.xml"/>
     <include file="db/changelog/changelogs/ch-remove-column-text-from-image.xml"/>
+    <include file="db/changelog/changelogs/ch-create-action-request-table.xml"/>
+    <include file="db/changelog/changelogs/ch-remove-column-text-from-action.xml"/>
 </databaseChangeLog>
