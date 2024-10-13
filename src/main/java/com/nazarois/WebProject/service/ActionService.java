@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface ActionService {
   DetailActionDto read(UUID actionId);
 
-  PageDto<ActionDto> read(UUID userId, Pageable pageable);
+  PageDto<ActionDto> read(String email, Pageable pageable);
 
   ActionDto generate(GenerateActionDto generateActionDto, String userEmail);
 

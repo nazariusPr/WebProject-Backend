@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ActionRepository extends JpaRepository<Action, UUID> {
-  @Query("SELECT a FROM Action a WHERE a.user.id = :userId")
-  Page<Action> findAllByUserId(UUID userId, Pageable pageable);
+  @Query("SELECT a FROM Action a WHERE a.user.email = :email")
+  Page<Action> findAllByUserEmail(String email, Pageable pageable);
 }

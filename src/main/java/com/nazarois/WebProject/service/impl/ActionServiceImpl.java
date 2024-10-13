@@ -42,8 +42,8 @@ public class ActionServiceImpl implements ActionService {
   }
 
   @Override
-  public PageDto<ActionDto> read(UUID userId, Pageable pageable) {
-    Page<Action> actions = repository.findAllByUserId(userId, pageable);
+  public PageDto<ActionDto> read(String email, Pageable pageable) {
+    Page<Action> actions = repository.findAllByUserEmail(email, pageable);
     return buildActionDtoPage(actions);
   }
 
