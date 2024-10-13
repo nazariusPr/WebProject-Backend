@@ -1,7 +1,11 @@
 package com.nazarois.WebProject.service.impl;
 
+import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_CANCELLATION_BAD_REQUEST_MESSAGE;
+import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY_NOT_FOUND_MESSAGE;
+
 import com.nazarois.WebProject.dto.action.ActionDto;
 import com.nazarois.WebProject.dto.action.GenerateActionDto;
+import com.nazarois.WebProject.exception.exceptions.BadRequestException;
 import com.nazarois.WebProject.mapper.ActionMapper;
 import com.nazarois.WebProject.model.Action;
 import com.nazarois.WebProject.model.enums.ActionStatus;
@@ -34,6 +38,11 @@ public class ActionServiceImpl implements ActionService {
   @Override
   public ActionDto cancel(UUID actionId) {
     Action action = findById(actionId);
+    if (action.getActionStatus().equals(ActionStatus.FINISHED)
+        || action.getActionStatus().equals(ActionStatus.CANCELLED)) {
+      throw new BadRequestException(ACTION_CANCELLATION_BAD_REQUEST_MESSAGE);
+    }
+
     asyncService.cancelTask(actionId);
 
     action.setActionStatus(ActionStatus.CANCELLED);
@@ -43,7 +52,7 @@ public class ActionServiceImpl implements ActionService {
   private Action findById(UUID actionId) {
     return repository
         .findById(actionId)
-        .orElseThrow(() -> new EntityNotFoundException("Not Found"));
+        .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_MESSAGE));
   }
 
   private Action buildInitialGenerateAction(String email) {

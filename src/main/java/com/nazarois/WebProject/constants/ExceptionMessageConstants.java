@@ -12,4 +12,7 @@ public class ExceptionMessageConstants {
   public static final String USER_NOT_VERIFIED_MESSAGE = "User is not verified!";
   public static final String FILE_UPLOADING_ERROR_MESSAGE = "Error while uploading file to S3";
   public static final String FILE_DELETING_ERROR_MESSAGE = "Error deleting the file";
+  public static final String ACTION_CANCELLATION_MESSAGE = "Action was cancelled";
+  public static final String ACTION_CANCELLATION_BAD_REQUEST_MESSAGE =
+      "Action is already finished or cancelled";
 }
