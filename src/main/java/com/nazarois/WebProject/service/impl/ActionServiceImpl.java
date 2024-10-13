@@ -1,12 +1,13 @@
 package com.nazarois.WebProject.service.impl;
 
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_CANCELLATION_BAD_REQUEST_MESSAGE;
-import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_IS_NOT_FINISHED;
+import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_IS_NOT_CANCELLED_MESSAGE;
+import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_IS_NOT_FINISHED_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY_NOT_FOUND_MESSAGE;
 
 import com.nazarois.WebProject.dto.action.ActionDto;
-import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.action.ActionRequestDto;
+import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.exception.exceptions.BadRequestException;
 import com.nazarois.WebProject.mapper.ActionMapper;
@@ -39,7 +40,7 @@ public class ActionServiceImpl implements ActionService {
   public DetailActionDto read(UUID actionId) {
     Action action = findById(actionId);
     if (!action.getActionStatus().equals(ActionStatus.FINISHED)) {
-      throw new BadRequestException(ACTION_IS_NOT_FINISHED);
+      throw new BadRequestException(ACTION_IS_NOT_FINISHED_MESSAGE);
     }
     return mapper.actionToDetailActionDto(action);
   }
@@ -77,8 +78,17 @@ public class ActionServiceImpl implements ActionService {
   @Override
   public ActionDto restart(UUID actionId) {
     Action action = findById(actionId);
+    if (!action.getActionStatus().equals(ActionStatus.CANCELLED)) {
+      throw new BadRequestException(ACTION_IS_NOT_CANCELLED_MESSAGE);
+    }
 
-    return null;
+    ActionDto actionDto = null;
+    if (action.getActionType().equals(ActionType.GENERATED)) {
+      actionDto = restartGenerateAction(action);
+    } else {
+      // to do
+    }
+    return actionDto;
   }
 
   private Action findById(UUID actionId) {
@@ -89,7 +99,6 @@ public class ActionServiceImpl implements ActionService {
 
   private Action buildInitialGenerateAction(String email, String text) {
     return Action.builder()
-        .text(text)
         .actionType(ActionType.GENERATED)
         .actionStatus(ActionStatus.INPROGRESS)
         .user(userService.findUserByEmail(email))
@@ -108,5 +117,14 @@ public class ActionServiceImpl implements ActionService {
     ActionRequest actionRequest = mapper.actionRequestDtoToActionRequest(actionRequestDto);
     actionRequest.setAction(action);
     actionRequestRepository.save(actionRequest);
+  }
+
+  private ActionDto restartGenerateAction(Action action) {
+    action.setActionStatus(ActionStatus.INPROGRESS);
+    ActionRequestDto actionRequestDto =
+        mapper.actionRequestToActionRequestDto(action.getActionRequest());
+    asyncService.generate(action, actionRequestDto);
+
+    return mapper.actionToActionDto(repository.save(action));
   }
 }

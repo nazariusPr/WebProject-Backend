@@ -2,8 +2,8 @@ package com.nazarois.WebProject.service.impl;
 
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_CANCELLATION_MESSAGE;
 
-import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.action.ActionRequestDto;
+import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.mapper.ActionMapper;
 import com.nazarois.WebProject.model.Action;
 import com.nazarois.WebProject.model.Image;
@@ -71,7 +71,7 @@ public class AsyncServiceImpl implements AsyncService {
     if (task.isCancelled()) {
       log.info("Cancelling the action");
 
-      imageStorageService.deleteImage(generatedImages);
+      //imageStorageService.deleteImage(generatedImages);
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
     }
 
@@ -81,7 +81,7 @@ public class AsyncServiceImpl implements AsyncService {
     if (task.isCancelled()) {
       log.info("Cancelling the action");
 
-      imageStorageService.deleteImage(generatedImages);
+      //imageStorageService.deleteImage(generatedImages);
       imageService.delete(images);
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
     }

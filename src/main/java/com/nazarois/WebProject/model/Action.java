@@ -47,9 +47,6 @@ public class Action {
   @Column(name = "action_status")
   private ActionStatus actionStatus;
 
-  @Column(name = "text")
-  private String text;
-
   @OneToOne(mappedBy = "action")
   private ActionRequest actionRequest;
 

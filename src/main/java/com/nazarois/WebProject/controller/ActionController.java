@@ -46,9 +46,7 @@ public class ActionController {
 
   @PostMapping("/generate-image")
   public ResponseEntity<ActionDto> generateImage(
-      @Validated @RequestBody ActionRequestDto request,
-      BindingResult result,
-      Principal principal) {
+      @Validated @RequestBody ActionRequestDto request, BindingResult result, Principal principal) {
     if (result.hasErrors()) {
       log.error("**/ Bad request to generate image");
       throw new ValidationException(
@@ -56,6 +54,12 @@ public class ActionController {
     }
 
     return ResponseEntity.ok(actionService.generate(request, principal.getName()));
+  }
+
+  @PatchMapping("/restart/{actionId}")
+  public ResponseEntity<ActionDto> restartAction(@PathVariable UUID actionId) {
+    log.info("**/ Restarting action");
+    return ResponseEntity.ok(actionService.restart(actionId));
   }
 
   @PatchMapping("/cancel/{actionId}")

@@ -14,7 +14,6 @@ import org.mapstruct.Mapping;
 public interface ActionMapper {
   ActionDto actionToActionDto(Action action);
 
-  @Mapping(target = "actionRequestDto", source = "actionRequest")
   DetailActionDto actionToDetailActionDto(Action action);
 
   ActionRequestDto actionRequestToActionRequestDto(ActionRequest actionRequest);
