@@ -28,6 +28,6 @@ public class ImageGeneratorServiceImpl implements ImageGeneratorService {
         generatedImagesDto.getData().stream()
             .map(image -> convertBase64ToString(image.getB64Json()))
             .toList();
-    return imageStorageService.uploadMultipleImages(images);
+    return imageStorageService.uploadImage(images);
   }
 }

@@ -46,7 +46,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
   }
 
   @Override
-  public List<String> uploadMultipleImages(List<byte[]> imagesBytes) {
+  public List<String> uploadImage(List<byte[]> imagesBytes) {
     List<String> fileNames = new ArrayList<>();
     for (byte[] imageBytes : imagesBytes) {
       String fileName = uploadImage(imageBytes);
@@ -63,6 +63,11 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     } catch (Exception e) {
       System.err.println(FILE_DELETING_ERROR_MESSAGE);
     }
+  }
+
+  @Override
+  public void deleteImage(List<String> fileNames) {
+    fileNames.forEach(this::deleteImage);
   }
 
   private String getUniqueFileName() {

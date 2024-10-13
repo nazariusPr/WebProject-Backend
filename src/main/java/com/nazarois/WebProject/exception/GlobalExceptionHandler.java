@@ -1,6 +1,7 @@
 package com.nazarois.WebProject.exception;
 
 import com.nazarois.WebProject.dto.exception.ExceptionDto;
+import com.nazarois.WebProject.exception.exceptions.BadRequestException;
 import com.nazarois.WebProject.exception.exceptions.InvalidTokenException;
 import com.nazarois.WebProject.exception.exceptions.TokenExpirationException;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +28,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler({
     ValidationException.class,
+    BadRequestException.class,
     IllegalArgumentException.class,
     ConstraintViolationException.class,
     DataIntegrityViolationException.class
