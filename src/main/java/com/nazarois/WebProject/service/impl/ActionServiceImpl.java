@@ -1,10 +1,13 @@
 package com.nazarois.WebProject.service.impl;
 
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_CANCELLATION_BAD_REQUEST_MESSAGE;
+import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_IS_NOT_FINISHED;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY_NOT_FOUND_MESSAGE;
 
+import com.nazarois.WebProject.dto.action.ActionDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.action.GenerateActionDto;
+import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.exception.exceptions.BadRequestException;
 import com.nazarois.WebProject.mapper.ActionMapper;
 import com.nazarois.WebProject.model.Action;
@@ -17,6 +20,8 @@ import com.nazarois.WebProject.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,16 +33,31 @@ public class ActionServiceImpl implements ActionService {
   private final ActionMapper mapper;
 
   @Override
-  public DetailActionDto generate(GenerateActionDto generateActionDto, String email) {
-    Action action =
-        repository.save(buildInitialGenerateAction(email, generateActionDto.getPrompt()));
-    asyncService.generate(action, generateActionDto);
-
+  public DetailActionDto read(UUID actionId) {
+    Action action = findById(actionId);
+    if (!action.getActionStatus().equals(ActionStatus.FINISHED)) {
+      throw new BadRequestException(ACTION_IS_NOT_FINISHED);
+    }
     return mapper.actionToDetailActionDto(action);
   }
 
   @Override
-  public DetailActionDto cancel(UUID actionId) {
+  public PageDto<ActionDto> read(UUID userId, Pageable pageable) {
+    Page<Action> actions = repository.findAllByUserId(userId, pageable);
+    return buildActionDtoPage(actions);
+  }
+
+  @Override
+  public ActionDto generate(GenerateActionDto generateActionDto, String email) {
+    Action action =
+        repository.save(buildInitialGenerateAction(email, generateActionDto.getPrompt()));
+    asyncService.generate(action, generateActionDto);
+
+    return mapper.actionToActionDto(action);
+  }
+
+  @Override
+  public ActionDto cancel(UUID actionId) {
     Action action = findById(actionId);
     if (action.getActionStatus().equals(ActionStatus.FINISHED)
         || action.getActionStatus().equals(ActionStatus.CANCELLED)) {
@@ -47,7 +67,7 @@ public class ActionServiceImpl implements ActionService {
     asyncService.cancelTask(actionId);
 
     action.setActionStatus(ActionStatus.CANCELLED);
-    return mapper.actionToDetailActionDto(repository.save(action));
+    return mapper.actionToActionDto(repository.save(action));
   }
 
   private Action findById(UUID actionId) {
@@ -63,5 +83,13 @@ public class ActionServiceImpl implements ActionService {
         .actionStatus(ActionStatus.INPROGRESS)
         .user(userService.findUserByEmail(email))
         .build();
+  }
+
+  private PageDto<ActionDto> buildActionDtoPage(Page<Action> page) {
+    return new PageDto<>(
+        page.getContent().stream().map(mapper::actionToActionDto).toList(),
+        page.getNumber(),
+        page.getTotalElements(),
+        page.getTotalPages());
   }
 }
