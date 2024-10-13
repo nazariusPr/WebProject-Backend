@@ -37,6 +37,12 @@ public class ActionServiceImpl implements ActionService {
   private final ActionMapper mapper;
 
   @Override
+  public Action findById(UUID actionId) {
+    return repository
+            .findById(actionId)
+            .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_MESSAGE));
+  }
+  @Override
   public DetailActionDto read(UUID actionId) {
     Action action = findById(actionId);
     if (!action.getActionStatus().equals(ActionStatus.FINISHED)) {
@@ -89,12 +95,6 @@ public class ActionServiceImpl implements ActionService {
       // to do
     }
     return actionDto;
-  }
-
-  private Action findById(UUID actionId) {
-    return repository
-        .findById(actionId)
-        .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_MESSAGE));
   }
 
   private Action buildInitialGenerateAction(String email, String text) {

@@ -3,8 +3,8 @@ package com.nazarois.WebProject.controller;
 import static com.nazarois.WebProject.constants.AppConstants.ACTION_LINK;
 
 import com.nazarois.WebProject.dto.action.ActionDto;
-import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.action.ActionRequestDto;
+import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.service.ActionService;
 import jakarta.validation.ValidationException;
@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +40,7 @@ public class ActionController {
   }
 
   @GetMapping("/{actionId}")
+  @PreAuthorize("@securityUtils.hasAccess(#actionId, authentication) or hasRole('ROLE_ADMIN')")
   public ResponseEntity<DetailActionDto> read(@PathVariable UUID actionId) {
     log.info("**/ Reading action of user");
     return ResponseEntity.ok(actionService.read(actionId));
@@ -57,12 +59,14 @@ public class ActionController {
   }
 
   @PatchMapping("/restart/{actionId}")
+  @PreAuthorize("@securityUtils.hasAccess(#actionId, authentication) or hasRole('ROLE_ADMIN')")
   public ResponseEntity<ActionDto> restartAction(@PathVariable UUID actionId) {
     log.info("**/ Restarting action");
     return ResponseEntity.ok(actionService.restart(actionId));
   }
 
   @PatchMapping("/cancel/{actionId}")
+  @PreAuthorize("@securityUtils.hasAccess(#actionId, authentication) or hasRole('ROLE_ADMIN')")
   public ResponseEntity<ActionDto> cancelAction(@PathVariable UUID actionId) {
     log.info("**/ Cancelling action");
     return ResponseEntity.ok(actionService.cancel(actionId));
