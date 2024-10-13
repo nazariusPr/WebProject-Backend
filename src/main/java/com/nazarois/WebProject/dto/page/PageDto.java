@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 public class PageDto<T> {
   private List<T> elems;
   private int currentPage;
-  private long totalUsers;
+  private long totalElems;
   private int totalPages;
 }
