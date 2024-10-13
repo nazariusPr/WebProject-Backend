@@ -15,7 +15,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ImageDto {
-    private UUID id;
-    private String url;
-    private String text;
+  private UUID id;
+  private String url;
 }

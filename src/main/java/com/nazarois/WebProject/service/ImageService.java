@@ -5,9 +5,9 @@ import com.nazarois.WebProject.model.Image;
 import java.util.List;
 
 public interface ImageService {
-  Image create(String fileName, String text, Action action);
+  Image create(String fileName, Action action);
 
-  List<Image> create(List<String> fileNames, String text, Action action);
+  List<Image> create(List<String> fileNames, Action action);
   void delete(Image image);
   void delete(List<Image> images);
 }

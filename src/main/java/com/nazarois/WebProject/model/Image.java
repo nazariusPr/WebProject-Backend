@@ -30,10 +30,6 @@ public class Image {
   @Column(name = "file_name")
   private String fileName;
 
-  @NotBlank
-  @Column(name = "text")
-  private String text;
-
   @ManyToOne
   @JoinColumn(name = "action_id")
   private Action action;

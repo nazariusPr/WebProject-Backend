@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.nazarois.WebProject.dto.image.ImageDto;
 import com.nazarois.WebProject.model.enums.ActionStatus;
 import com.nazarois.WebProject.model.enums.ActionType;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -22,5 +21,6 @@ public class ActionDto {
   private ActionType actionType;
   private ActionStatus actionStatus;
   private LocalDateTime createdAt;
+  private String text;
   private List<ImageDto> images;
 }

@@ -46,6 +46,9 @@ public class Action {
   @Column(name = "action_status")
   private ActionStatus actionStatus;
 
+  @Column(name = "text")
+  private String text;
+
   @OneToMany(mappedBy = "action")
   private List<Image> images;
 
