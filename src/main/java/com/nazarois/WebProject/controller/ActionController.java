@@ -2,7 +2,7 @@ package com.nazarois.WebProject.controller;
 
 import static com.nazarois.WebProject.constants.AppConstants.ACTION_LINK;
 
-import com.nazarois.WebProject.dto.action.ActionDto;
+import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.action.GenerateActionDto;
 import com.nazarois.WebProject.service.ActionService;
 import jakarta.validation.ValidationException;
@@ -30,7 +30,7 @@ public class ActionController {
   private final ActionService actionService;
 
   @PostMapping("/generate-image")
-  public ResponseEntity<ActionDto> generateImage(
+  public ResponseEntity<DetailActionDto> generateImage(
       @Validated @RequestBody GenerateActionDto request,
       BindingResult result,
       Principal principal) {
@@ -44,7 +44,7 @@ public class ActionController {
   }
 
   @DeleteMapping("/cancel/{actionId}")
-  public ResponseEntity<ActionDto> cancelAction(@PathVariable UUID actionId) {
+  public ResponseEntity<DetailActionDto> cancelAction(@PathVariable UUID actionId) {
     log.info("**/ Cancelling action");
     return ResponseEntity.ok(actionService.cancel(actionId));
   }

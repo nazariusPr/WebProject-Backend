@@ -2,7 +2,7 @@ package com.nazarois.WebProject.service.impl;
 
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_CANCELLATION_MESSAGE;
 
-import com.nazarois.WebProject.dto.action.ActionDto;
+import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.action.GenerateActionDto;
 import com.nazarois.WebProject.mapper.ActionMapper;
 import com.nazarois.WebProject.model.Action;
@@ -33,11 +33,11 @@ public class AsyncServiceImpl implements AsyncService {
   private final ActionRepository repository;
   private final ActionMapper mapper;
   private final ExecutorService executorService = Executors.newCachedThreadPool();
-  private final ConcurrentHashMap<UUID, Future<ActionDto>> ongoingTasks = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<UUID, Future<DetailActionDto>> ongoingTasks = new ConcurrentHashMap<>();
 
   @Override
   public void generate(Action action, GenerateActionDto generateActionDto) {
-    Future<ActionDto> futureTask =
+    Future<DetailActionDto> futureTask =
         executorService.submit(
             () -> {
               try {
@@ -51,15 +51,15 @@ public class AsyncServiceImpl implements AsyncService {
 
   @Override
   public void cancelTask(UUID actionId) {
-    Future<ActionDto> task = ongoingTasks.get(actionId);
+    Future<DetailActionDto> task = ongoingTasks.get(actionId);
     if (task != null) {
       task.cancel(true);
     }
   }
 
-  private ActionDto doGenerateAction(Action action, GenerateActionDto generateActionDto)
+  private DetailActionDto doGenerateAction(Action action, GenerateActionDto generateActionDto)
       throws InterruptedException {
-    Future<ActionDto> task = ongoingTasks.get(action.getId());
+    Future<DetailActionDto> task = ongoingTasks.get(action.getId());
 
     if (task.isCancelled()) {
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
@@ -88,7 +88,7 @@ public class AsyncServiceImpl implements AsyncService {
 
     action.setActionStatus(ActionStatus.FINISHED);
     action.setImages(images);
-    return mapper.actionToActionDto(repository.save(action));
+    return mapper.actionToDetailActionDto(repository.save(action));
   }
 
   private void simulateTask() {

@@ -1,10 +1,10 @@
 package com.nazarois.WebProject.service;
 
-import com.nazarois.WebProject.dto.action.ActionDto;
+import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.action.GenerateActionDto;
 import java.util.UUID;
 
 public interface ActionService {
-  ActionDto generate(GenerateActionDto generateActionDto, String userEmail);
-  ActionDto cancel(UUID actionId);
+  DetailActionDto generate(GenerateActionDto generateActionDto, String userEmail);
+  DetailActionDto cancel(UUID actionId);
 }

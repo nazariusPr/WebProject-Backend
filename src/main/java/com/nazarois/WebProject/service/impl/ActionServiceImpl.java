@@ -3,7 +3,7 @@ package com.nazarois.WebProject.service.impl;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_CANCELLATION_BAD_REQUEST_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY_NOT_FOUND_MESSAGE;
 
-import com.nazarois.WebProject.dto.action.ActionDto;
+import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.action.GenerateActionDto;
 import com.nazarois.WebProject.exception.exceptions.BadRequestException;
 import com.nazarois.WebProject.mapper.ActionMapper;
@@ -28,16 +28,16 @@ public class ActionServiceImpl implements ActionService {
   private final ActionMapper mapper;
 
   @Override
-  public ActionDto generate(GenerateActionDto generateActionDto, String email) {
+  public DetailActionDto generate(GenerateActionDto generateActionDto, String email) {
     Action action =
         repository.save(buildInitialGenerateAction(email, generateActionDto.getPrompt()));
     asyncService.generate(action, generateActionDto);
 
-    return mapper.actionToActionDto(action);
+    return mapper.actionToDetailActionDto(action);
   }
 
   @Override
-  public ActionDto cancel(UUID actionId) {
+  public DetailActionDto cancel(UUID actionId) {
     Action action = findById(actionId);
     if (action.getActionStatus().equals(ActionStatus.FINISHED)
         || action.getActionStatus().equals(ActionStatus.CANCELLED)) {
@@ -47,7 +47,7 @@ public class ActionServiceImpl implements ActionService {
     asyncService.cancelTask(actionId);
 
     action.setActionStatus(ActionStatus.CANCELLED);
-    return mapper.actionToActionDto(repository.save(action));
+    return mapper.actionToDetailActionDto(repository.save(action));
   }
 
   private Action findById(UUID actionId) {
