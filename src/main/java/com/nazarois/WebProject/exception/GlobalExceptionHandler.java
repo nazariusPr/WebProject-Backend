@@ -4,6 +4,7 @@ import com.nazarois.WebProject.dto.exception.ExceptionDto;
 import com.nazarois.WebProject.exception.exceptions.BadRequestException;
 import com.nazarois.WebProject.exception.exceptions.InvalidTokenException;
 import com.nazarois.WebProject.exception.exceptions.TokenExpirationException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
@@ -41,6 +42,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler({
+    ExpiredJwtException.class,
     SecurityException.class,
     TokenExpirationException.class,
     InvalidTokenException.class
