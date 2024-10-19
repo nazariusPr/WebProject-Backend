@@ -1,11 +1,14 @@
 package com.nazarois.WebProject.service.impl;
 
+import static com.nazarois.WebProject.constants.EmailConstants.GENERATED_IMAGES_TEMPLATE_NAME;
 import static com.nazarois.WebProject.constants.EmailConstants.VERIFY_EMAIL_TEMPLATE_NAME;
 
 import com.nazarois.WebProject.service.EmailService;
 import com.nazarois.WebProject.util.ClientHelper;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,6 +31,16 @@ public class EmailServiceImpl implements EmailService {
 
     String emailContent = createEmailTemplate(variables, VERIFY_EMAIL_TEMPLATE_NAME);
     sendEmail(to, "Email Verification", emailContent);
+  }
+
+  @Override
+  public void sendGeneratedImagesEmail(String to, String actionDescription, List<String> images) {
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("actionDescription", actionDescription);
+    variables.put("images", images);
+
+    String emailContent = createEmailTemplate(variables, GENERATED_IMAGES_TEMPLATE_NAME);
+    sendEmail(to, "Generated Images", emailContent);
   }
 
   private void sendEmail(String to, String subject, String content) {
