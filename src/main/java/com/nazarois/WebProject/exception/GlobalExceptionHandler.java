@@ -4,6 +4,7 @@ import com.nazarois.WebProject.dto.exception.ExceptionDto;
 import com.nazarois.WebProject.exception.exceptions.BadRequestException;
 import com.nazarois.WebProject.exception.exceptions.InvalidTokenException;
 import com.nazarois.WebProject.exception.exceptions.TokenExpirationException;
+import com.nazarois.WebProject.exception.exceptions.TooManyRequestsException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -60,6 +61,14 @@ public class GlobalExceptionHandler {
 
     log.warn(exceptionDto.getMessage(), exceptionDto);
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionDto);
+  }
+
+  @ExceptionHandler({TooManyRequestsException.class})
+  public final ResponseEntity<?> handleTooManyRequestsException(WebRequest request) {
+    ExceptionDto exceptionDto = new ExceptionDto(getErrorAttributes(request));
+
+    log.warn(exceptionDto.getMessage(), exceptionDto);
+    return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(exceptionDto);
   }
 
   private Map<String, Object> getErrorAttributes(WebRequest webRequest) {

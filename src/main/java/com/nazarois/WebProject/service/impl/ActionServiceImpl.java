@@ -1,8 +1,10 @@
 package com.nazarois.WebProject.service.impl;
 
+import static com.nazarois.WebProject.constants.AppConstants.ACTION_LIMITATION_NUMBER;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_CANCELLATION_BAD_REQUEST_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_IS_NOT_CANCELLED_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_IS_NOT_FINISHED_MESSAGE;
+import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION_LIMITATION_MESSAGE;
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY_NOT_FOUND_MESSAGE;
 
 import com.nazarois.WebProject.dto.action.ActionDto;
@@ -10,6 +12,7 @@ import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.exception.exceptions.BadRequestException;
+import com.nazarois.WebProject.exception.exceptions.TooManyRequestsException;
 import com.nazarois.WebProject.mapper.ActionMapper;
 import com.nazarois.WebProject.model.Action;
 import com.nazarois.WebProject.model.ActionRequest;
@@ -39,9 +42,10 @@ public class ActionServiceImpl implements ActionService {
   @Override
   public Action findById(UUID actionId) {
     return repository
-            .findById(actionId)
-            .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_MESSAGE));
+        .findById(actionId)
+        .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_MESSAGE));
   }
+
   @Override
   public DetailActionDto read(UUID actionId) {
     Action action = findById(actionId);
@@ -59,6 +63,7 @@ public class ActionServiceImpl implements ActionService {
 
   @Override
   public ActionDto generate(ActionRequestDto actionRequestDto, String email) {
+    validateActionRequest(email);
     Action action =
         repository.save(buildInitialGenerateAction(email, actionRequestDto.getPrompt()));
     saveActionRequest(action, actionRequestDto);
@@ -82,11 +87,12 @@ public class ActionServiceImpl implements ActionService {
   }
 
   @Override
-  public ActionDto restart(UUID actionId) {
+  public ActionDto restart(UUID actionId, String email) {
     Action action = findById(actionId);
     if (!action.getActionStatus().equals(ActionStatus.CANCELLED)) {
       throw new BadRequestException(ACTION_IS_NOT_CANCELLED_MESSAGE);
     }
+    validateActionRequest(email);
 
     ActionDto actionDto = null;
     if (action.getActionType().equals(ActionType.GENERATED)) {
@@ -126,5 +132,13 @@ public class ActionServiceImpl implements ActionService {
     asyncService.generate(action, actionRequestDto);
 
     return mapper.actionToActionDto(repository.save(action));
+  }
+
+  private void validateActionRequest(String email) {
+    int numOfActionInProgress = repository.countActionsOfStatus(email, ActionStatus.INPROGRESS);
+
+    if (numOfActionInProgress >= ACTION_LIMITATION_NUMBER) {
+      throw new TooManyRequestsException(ACTION_LIMITATION_MESSAGE);
+    }
   }
 }

@@ -13,4 +13,5 @@ public class AppConstants {
   public static final String IMAGE_RESPONSE_FORMAT = "b64_json";
   public static final String AMAZON_URL = "https://%s.s3.amazonaws.com/%s";
   public static final String IMAGE_CONTENT_TYPE = "image/png";
+  public static final int ACTION_LIMITATION_NUMBER = 5;
 }

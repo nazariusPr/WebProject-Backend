@@ -19,4 +19,6 @@ public class ExceptionMessageConstants {
   public static final String ACTION_IS_NOT_CANCELLED_MESSAGE = "Action is not cancelled";
   public static final String ACCESS_IS_DENIED_MESSAGE =
       "The action is not permitted or user is not authenticated!";
+  public static final String ACTION_LIMITATION_MESSAGE =
+      "You can have a maximum of 5 actions in progress.";
 }

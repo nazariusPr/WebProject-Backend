@@ -18,5 +18,5 @@ public interface ActionService {
   ActionDto generate(ActionRequestDto actionRequestDto, String userEmail);
 
   ActionDto cancel(UUID actionId);
-  ActionDto restart(UUID actionId);
+  ActionDto restart(UUID actionId, String email);
 }
