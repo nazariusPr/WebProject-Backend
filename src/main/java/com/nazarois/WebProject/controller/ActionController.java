@@ -60,9 +60,9 @@ public class ActionController {
 
   @PatchMapping("/restart/{actionId}")
   @PreAuthorize("@securityUtils.hasAccess(#actionId, authentication) or hasRole('ROLE_ADMIN')")
-  public ResponseEntity<ActionDto> restartAction(@PathVariable UUID actionId) {
+  public ResponseEntity<ActionDto> restartAction(@PathVariable UUID actionId, Principal principal) {
     log.info("**/ Restarting action");
-    return ResponseEntity.ok(actionService.restart(actionId));
+    return ResponseEntity.ok(actionService.restart(actionId, principal.getName()));
   }
 
   @PatchMapping("/cancel/{actionId}")
