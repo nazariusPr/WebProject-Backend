@@ -10,9 +10,11 @@ import com.nazarois.WebProject.model.Image;
 import com.nazarois.WebProject.model.enums.ActionStatus;
 import com.nazarois.WebProject.repository.ActionRepository;
 import com.nazarois.WebProject.service.AsyncService;
+import com.nazarois.WebProject.service.EmailService;
 import com.nazarois.WebProject.service.ImageGeneratorService;
 import com.nazarois.WebProject.service.ImageService;
 import com.nazarois.WebProject.service.ImageStorageService;
+import com.nazarois.WebProject.util.ImageUtils;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,10 +32,13 @@ public class AsyncServiceImpl implements AsyncService {
   private final ImageService imageService;
   private final ImageGeneratorService imageGeneratorService;
   private final ImageStorageService imageStorageService;
+  private final EmailService emailService;
+  private final ImageUtils imageUtils;
   private final ActionRepository repository;
   private final ActionMapper mapper;
   private final ExecutorService executorService = Executors.newCachedThreadPool();
-  private final ConcurrentHashMap<UUID, Future<DetailActionDto>> ongoingTasks = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<UUID, Future<DetailActionDto>> ongoingTasks =
+      new ConcurrentHashMap<>();
 
   @Override
   public void generate(Action action, ActionRequestDto actionRequestDto) {
@@ -71,7 +76,7 @@ public class AsyncServiceImpl implements AsyncService {
     if (task.isCancelled()) {
       log.info("Cancelling the action");
 
-      //imageStorageService.deleteImage(generatedImages);
+      // imageStorageService.deleteImage(generatedImages);
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
     }
 
@@ -81,14 +86,22 @@ public class AsyncServiceImpl implements AsyncService {
     if (task.isCancelled()) {
       log.info("Cancelling the action");
 
-      //imageStorageService.deleteImage(generatedImages);
+      // imageStorageService.deleteImage(generatedImages);
       imageService.delete(images);
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
     }
 
+    sendEmailOfGeneratedImages(
+        action.getUser().getEmail(), actionRequestDto.getPrompt(), generatedImages);
     action.setActionStatus(ActionStatus.FINISHED);
     action.setImages(images);
     return mapper.actionToDetailActionDto(repository.save(action));
+  }
+
+  private void sendEmailOfGeneratedImages(
+      String email, String actionDescription, List<String> images) {
+    List<String> imagesUrl = images.stream().map(imageUtils::buildImageUrl).toList();
+    emailService.sendGeneratedImagesEmail(email, actionDescription, imagesUrl);
   }
 
   private void simulateTask() {
