@@ -20,6 +20,8 @@ import org.springframework.data.jpa.domain.Specification;
 public class ActionSpecification implements Specification<Action> {
   private final transient ActionFilterDto filter;
 
+  private final String userEmail;
+
   @Override
   public Predicate toPredicate(
       Root<Action> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -32,6 +34,10 @@ public class ActionSpecification implements Specification<Action> {
 
   private List<Predicate> createPredicates(Root<Action> root, CriteriaBuilder cb) {
     List<Predicate> predicates = new ArrayList<>();
+
+    if (userEmail != null && !userEmail.isEmpty()) {
+      predicates.add(createUserEmailPredicate(root, cb, userEmail));
+    }
 
     if (filter.getPrompt() != null && !filter.getPrompt().isEmpty()) {
       predicates.add(createPromptPredicate(root, cb, filter.getPrompt()));
@@ -54,6 +60,10 @@ public class ActionSpecification implements Specification<Action> {
     }
 
     return predicates;
+  }
+
+  private Predicate createUserEmailPredicate(Root<Action> root, CriteriaBuilder cb, String prompt) {
+    return cb.equal(root.get("user").get("email"), userEmail);
   }
 
   private Predicate createPromptPredicate(Root<Action> root, CriteriaBuilder cb, String prompt) {

@@ -24,6 +24,7 @@ import com.nazarois.WebProject.repository.ActionRequestRepository;
 import com.nazarois.WebProject.service.ActionService;
 import com.nazarois.WebProject.service.AsyncService;
 import com.nazarois.WebProject.service.UserService;
+import com.nazarois.WebProject.specification.ActionSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -63,8 +64,10 @@ public class ActionServiceImpl implements ActionService {
   }
 
   @Override
-  public PageDto<ActionDto> read(ActionFilterDto filterDto, Pageable pageable) {
-    return null;
+  public PageDto<ActionDto> read(ActionFilterDto filterDto, String email, Pageable pageable) {
+    ActionSpecification specification = new ActionSpecification(filterDto, email);
+    Page<Action> actions = repository.findAll(specification, pageable);
+    return buildActionDtoPage(actions);
   }
 
   @Override
