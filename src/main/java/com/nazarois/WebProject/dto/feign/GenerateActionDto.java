@@ -1,4 +1,4 @@
-package com.nazarois.WebProject.dto.action;
+package com.nazarois.WebProject.dto.feign;
 
 import static com.nazarois.WebProject.constants.AppConstants.IMAGE_RESPONSE_FORMAT;
 
@@ -11,17 +11,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ActionRequestDto {
-  @NotBlank
-  @Length(max = 30)
-  private String title;
-
+public class GenerateActionDto {
   @NotBlank private String prompt;
 
   @ValidSize private String size;
@@ -29,4 +24,6 @@ public class ActionRequestDto {
   @Min(1)
   @Max(10)
   private int numImages;
+
+  private final String responseFormat = IMAGE_RESPONSE_FORMAT;
 }
