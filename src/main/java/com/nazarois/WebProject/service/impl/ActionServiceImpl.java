@@ -8,6 +8,7 @@ import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY_NOT_FOUND_MESSAGE;
 
 import com.nazarois.WebProject.dto.action.ActionDto;
+import com.nazarois.WebProject.dto.action.ActionFilterDto;
 import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
@@ -59,6 +60,11 @@ public class ActionServiceImpl implements ActionService {
   public PageDto<ActionDto> read(String email, Pageable pageable) {
     Page<Action> actions = repository.findAllByUserEmail(email, pageable);
     return buildActionDtoPage(actions);
+  }
+
+  @Override
+  public PageDto<ActionDto> read(ActionFilterDto filterDto, Pageable pageable) {
+    return null;
   }
 
   @Override
