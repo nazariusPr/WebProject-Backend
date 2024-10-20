@@ -8,6 +8,7 @@ import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ACTION
 import static com.nazarois.WebProject.constants.ExceptionMessageConstants.ENTITY_NOT_FOUND_MESSAGE;
 
 import com.nazarois.WebProject.dto.action.ActionDto;
+import com.nazarois.WebProject.dto.action.ActionFilterDto;
 import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
@@ -23,6 +24,7 @@ import com.nazarois.WebProject.repository.ActionRequestRepository;
 import com.nazarois.WebProject.service.ActionService;
 import com.nazarois.WebProject.service.AsyncService;
 import com.nazarois.WebProject.service.UserService;
+import com.nazarois.WebProject.specification.ActionSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -58,6 +60,13 @@ public class ActionServiceImpl implements ActionService {
   @Override
   public PageDto<ActionDto> read(String email, Pageable pageable) {
     Page<Action> actions = repository.findAllByUserEmail(email, pageable);
+    return buildActionDtoPage(actions);
+  }
+
+  @Override
+  public PageDto<ActionDto> read(ActionFilterDto filterDto, String email, Pageable pageable) {
+    ActionSpecification specification = new ActionSpecification(filterDto, email);
+    Page<Action> actions = repository.findAll(specification, pageable);
     return buildActionDtoPage(actions);
   }
 
