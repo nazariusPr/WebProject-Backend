@@ -3,6 +3,7 @@ package com.nazarois.WebProject.controller;
 import static com.nazarois.WebProject.constants.AppConstants.ACTION_LINK;
 
 import com.nazarois.WebProject.dto.action.ActionDto;
+import com.nazarois.WebProject.dto.action.ActionFilterDto;
 import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
@@ -37,6 +38,13 @@ public class ActionController {
   public ResponseEntity<PageDto<ActionDto>> read(Pageable pageable, Principal principal) {
     log.info("**/ Reading all actions of user");
     return ResponseEntity.ok(actionService.read(principal.getName(), pageable));
+  }
+
+  @GetMapping("/filter")
+  public ResponseEntity<PageDto<ActionDto>> read(
+      ActionFilterDto filter, Pageable pageable, Principal principal) {
+    log.info("**/ Filtering all actions of user");
+    return ResponseEntity.ok(actionService.read(filter, principal.getName(), pageable));
   }
 
   @GetMapping("/{actionId}")
