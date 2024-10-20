@@ -8,10 +8,13 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class ActionSpecification implements Specification<Action> {
@@ -28,11 +31,35 @@ public class ActionSpecification implements Specification<Action> {
   }
 
   private List<Predicate> createPredicates(Root<Action> root, CriteriaBuilder cb) {
-    return null;
+    List<Predicate> predicates = new ArrayList<>();
+
+    if (filter.getPrompt() != null && !filter.getPrompt().isEmpty()) {
+      predicates.add(createPromptPredicate(root, cb, filter.getPrompt()));
+    }
+
+    if (filter.getActionType() != null) {
+      predicates.add(createActionTypePredicate(root, cb, filter.getActionType()));
+    }
+
+    if (filter.getActionStatus() != null) {
+      predicates.add(createActionStatusPredicate(root, cb, filter.getActionStatus()));
+    }
+
+    if (filter.getBegin() != null) {
+      predicates.add(createBeginPredicate(root, cb, filter.getBegin()));
+    }
+
+    if (filter.getEnd() != null) {
+      predicates.add(createEndPredicate(root, cb, filter.getEnd()));
+    }
+
+    return predicates;
   }
-  private Predicate createPromptPredicate(Root<Action> root, CriteriaBuilder cb, String prompt){
-    return cb.like(cb.lower(root.get("prompt")), "%" + prompt.toLowerCase() + "%");
+
+  private Predicate createPromptPredicate(Root<Action> root, CriteriaBuilder cb, String prompt) {
+    return cb.like(cb.lower(root.get("title")), "%" + prompt.toLowerCase() + "%");
   }
+
   private Predicate createActionTypePredicate(
       Root<Action> root, CriteriaBuilder cb, ActionType actionType) {
     return cb.equal(root.get("actionType"), actionType);
@@ -41,5 +68,15 @@ public class ActionSpecification implements Specification<Action> {
   private Predicate createActionStatusPredicate(
       Root<Action> root, CriteriaBuilder cb, ActionStatus actionStatus) {
     return cb.equal(root.get("actionStatus"), actionStatus);
+  }
+
+  private Predicate createBeginPredicate(Root<Action> root, CriteriaBuilder cb, LocalDate begin) {
+    LocalDateTime beginDateTime = begin.atStartOfDay();
+    return cb.greaterThanOrEqualTo(root.get("createdAt"), beginDateTime);
+  }
+
+  private Predicate createEndPredicate(Root<Action> root, CriteriaBuilder cb, LocalDate end) {
+    LocalDateTime endDateTime = end.atTime(LocalTime.MAX);
+    return cb.lessThanOrEqualTo(root.get("createdAt"), endDateTime);
   }
 }
