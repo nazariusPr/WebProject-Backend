@@ -1,8 +1,8 @@
 package com.nazarois.WebProject.service;
 
-import com.nazarois.WebProject.dto.action.ActionRequestDto;
+import com.nazarois.WebProject.dto.feign.GenerateActionDto;
 import java.util.List;
 
 public interface ImageGeneratorService {
-  List<String> generateImage(ActionRequestDto actionRequestDto);
+  List<String> generateImage(GenerateActionDto generateActionDto);
 }

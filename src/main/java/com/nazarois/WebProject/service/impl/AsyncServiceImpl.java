@@ -70,7 +70,9 @@ public class AsyncServiceImpl implements AsyncService {
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
     }
 
-    List<String> generatedImages = imageGeneratorService.generateImage(actionRequestDto);
+    List<String> generatedImages =
+        imageGeneratorService.generateImage(
+            mapper.actionRequestDtoToGenerateActionDto(actionRequestDto));
     simulateTask();
 
     if (task.isCancelled()) {
