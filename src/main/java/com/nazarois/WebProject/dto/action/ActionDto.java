@@ -17,6 +17,7 @@ import java.util.UUID;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ActionDto {
     private UUID id;
+    private String title;
     private ActionType actionType;
     private ActionStatus actionStatus;
     private LocalDateTime createdAt;

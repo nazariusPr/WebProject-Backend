@@ -64,8 +64,7 @@ public class ActionServiceImpl implements ActionService {
   @Override
   public ActionDto generate(ActionRequestDto actionRequestDto, String email) {
     validateActionRequest(email);
-    Action action =
-        repository.save(buildInitialGenerateAction(email, actionRequestDto.getPrompt()));
+    Action action = repository.save(buildInitialGenerateAction(email, actionRequestDto.getTitle()));
     saveActionRequest(action, actionRequestDto);
     asyncService.generate(action, actionRequestDto);
 
@@ -103,8 +102,9 @@ public class ActionServiceImpl implements ActionService {
     return actionDto;
   }
 
-  private Action buildInitialGenerateAction(String email, String text) {
+  private Action buildInitialGenerateAction(String email, String title) {
     return Action.builder()
+        .title(title)
         .actionType(ActionType.GENERATED)
         .actionStatus(ActionStatus.INPROGRESS)
         .user(userService.findUserByEmail(email))
