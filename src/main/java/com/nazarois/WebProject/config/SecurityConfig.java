@@ -1,5 +1,6 @@
 package com.nazarois.WebProject.config;
 
+import static com.nazarois.WebProject.constants.AppConstants.ACTION_LINK;
 import static com.nazarois.WebProject.constants.AppConstants.AUTH_LINK;
 import static com.nazarois.WebProject.util.ClientHelper.CLIENT_URL;
 
@@ -53,7 +54,12 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers(AUTH_LINK + "/**").permitAll().anyRequest().authenticated())
+                auth.requestMatchers(AUTH_LINK + "/**")
+                    .permitAll()
+                    .requestMatchers(ACTION_LINK + "/{actionId}/updates")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(this.authenticationProvider)
         .addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class);

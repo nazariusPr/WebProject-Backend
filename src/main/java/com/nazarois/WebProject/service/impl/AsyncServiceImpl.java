@@ -14,6 +14,7 @@ import com.nazarois.WebProject.service.EmailService;
 import com.nazarois.WebProject.service.ImageGeneratorService;
 import com.nazarois.WebProject.service.ImageService;
 import com.nazarois.WebProject.service.ImageStorageService;
+import com.nazarois.WebProject.service.SseService;
 import com.nazarois.WebProject.util.ImageUtils;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class AsyncServiceImpl implements AsyncService {
+  private final SseService sseService;
   private final ImageService imageService;
   private final ImageGeneratorService imageGeneratorService;
   private final ImageStorageService imageStorageService;
@@ -49,6 +51,7 @@ public class AsyncServiceImpl implements AsyncService {
                 return doGenerateAction(action, actionRequestDto);
               } finally {
                 ongoingTasks.remove(action.getId());
+                sseService.completeEmitter(action.getId());
               }
             });
     ongoingTasks.put(action.getId(), futureTask);
@@ -97,7 +100,10 @@ public class AsyncServiceImpl implements AsyncService {
         action.getUser().getEmail(), actionRequestDto.getPrompt(), generatedImages);
     action.setActionStatus(ActionStatus.FINISHED);
     action.setImages(images);
-    return mapper.actionToDetailActionDto(repository.save(action));
+    Action completedAction = repository.save(action);
+
+    sseService.sendUpdate(action.getId(), ActionStatus.FINISHED);
+    return mapper.actionToDetailActionDto(completedAction);
   }
 
   private void sendEmailOfGeneratedImages(

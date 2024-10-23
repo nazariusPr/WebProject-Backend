@@ -8,6 +8,7 @@ import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.service.ActionService;
+import com.nazarois.WebProject.service.SseService;
 import jakarta.validation.ValidationException;
 import java.security.Principal;
 import java.util.Objects;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
 @AllArgsConstructor
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ACTION_LINK)
 public class ActionController {
   private final ActionService actionService;
+  private final SseService sseService;
 
   @GetMapping
   public ResponseEntity<PageDto<ActionDto>> read(Pageable pageable, Principal principal) {
@@ -64,6 +68,14 @@ public class ActionController {
     }
 
     return ResponseEntity.ok(actionService.generate(request, principal.getName()));
+  }
+
+  @GetMapping("/{actionId}/updates")
+  @PreAuthorize("@securityUtils.hasAccess(#actionId, #accessToken) or hasRole('ROLE_ADMIN')")
+  public SseEmitter subscribeToActionUpdates(
+      @PathVariable UUID actionId, @RequestParam String accessToken) {
+    log.info("**/ Subscribing to action updates " + actionId);
+    return sseService.registerClient(actionId);
   }
 
   @PatchMapping("/restart/{actionId}")
