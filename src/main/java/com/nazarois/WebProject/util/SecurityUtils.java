@@ -39,7 +39,6 @@ public class SecurityUtils {
     String email = jwtService.extractUsername(accessToken);
     Action action = actionService.findById(actionId);
 
-    System.out.println(action.getUser().getEmail().equals(email));
     return action.getUser().getEmail().equals(email);
   }
 
