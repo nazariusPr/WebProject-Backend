@@ -79,7 +79,7 @@ public class AsyncServiceImpl implements AsyncService {
     simulateTask();
 
     if (task.isCancelled()) {
-      log.info("Cancelling the action");
+      log.info("**/ Cancelling the action");
 
       // imageStorageService.deleteImage(generatedImages);
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
@@ -89,7 +89,7 @@ public class AsyncServiceImpl implements AsyncService {
     simulateTask();
 
     if (task.isCancelled()) {
-      log.info("Cancelling the action");
+      log.info("**/ Cancelling the action");
 
       // imageStorageService.deleteImage(generatedImages);
       imageService.delete(images);
