@@ -88,8 +88,6 @@ public class ActionServiceImpl implements ActionService {
       throw new BadRequestException(ACTION_CANCELLATION_BAD_REQUEST_MESSAGE);
     }
 
-    asyncService.cancelTask(actionId);
-
     action.setActionStatus(ActionStatus.CANCELLED);
     return mapper.actionToActionDto(repository.save(action));
   }
