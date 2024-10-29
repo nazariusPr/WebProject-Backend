@@ -67,6 +67,7 @@ public class ActionController {
           Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
     }
 
+    log.info("**/ Generating image");
     return ResponseEntity.ok(actionService.generate(request, principal.getName()));
   }
 

@@ -17,11 +17,10 @@ import com.nazarois.WebProject.service.ImageStorageService;
 import com.nazarois.WebProject.service.SseService;
 import com.nazarois.WebProject.util.ImageUtils;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,37 +38,23 @@ public class AsyncServiceImpl implements AsyncService {
   private final ActionRepository repository;
   private final ActionMapper mapper;
   private final ExecutorService executorService = Executors.newCachedThreadPool();
-  private final ConcurrentHashMap<UUID, Future<DetailActionDto>> ongoingTasks =
-      new ConcurrentHashMap<>();
 
   @Override
   public void generate(Action action, ActionRequestDto actionRequestDto) {
-    Future<DetailActionDto> futureTask =
-        executorService.submit(
-            () -> {
-              try {
-                return doGenerateAction(action, actionRequestDto);
-              } finally {
-                ongoingTasks.remove(action.getId());
-                sseService.completeEmitter(action.getId());
-              }
-            });
-    ongoingTasks.put(action.getId(), futureTask);
-  }
-
-  @Override
-  public void cancelTask(UUID actionId) {
-    Future<DetailActionDto> task = ongoingTasks.get(actionId);
-    if (task != null) {
-      task.cancel(true);
-    }
+    executorService.submit(
+        () -> {
+          try {
+            return doGenerateAction(action, actionRequestDto);
+          } finally {
+            sseService.completeEmitter(action.getId());
+          }
+        });
   }
 
   private DetailActionDto doGenerateAction(Action action, ActionRequestDto actionRequestDto)
       throws InterruptedException {
-    Future<DetailActionDto> task = ongoingTasks.get(action.getId());
-
-    if (task.isCancelled()) {
+    UUID actionId = action.getId();
+    if (getActionStatus(actionId) == ActionStatus.CANCELLED) {
       throw new InterruptedException(ACTION_CANCELLATION_MESSAGE);
     }
 
@@ -78,7 +63,7 @@ public class AsyncServiceImpl implements AsyncService {
             mapper.actionRequestDtoToGenerateActionDto(actionRequestDto));
     simulateTask();
 
-    if (task.isCancelled()) {
+    if (getActionStatus(actionId) == ActionStatus.CANCELLED) {
       log.info("**/ Cancelling the action");
 
       // imageStorageService.deleteImage(generatedImages);
@@ -88,7 +73,7 @@ public class AsyncServiceImpl implements AsyncService {
     List<Image> images = imageService.create(generatedImages, action);
     simulateTask();
 
-    if (task.isCancelled()) {
+    if (getActionStatus(actionId) == ActionStatus.CANCELLED) {
       log.info("**/ Cancelling the action");
 
       // imageStorageService.deleteImage(generatedImages);
@@ -112,9 +97,14 @@ public class AsyncServiceImpl implements AsyncService {
     emailService.sendGeneratedImagesEmail(email, actionDescription, imagesUrl);
   }
 
+  private ActionStatus getActionStatus(UUID actionId) {
+    Optional<Action> action = repository.findById(actionId);
+    return action.isPresent() ? action.get().getActionStatus() : ActionStatus.CANCELLED;
+  }
+
   private void simulateTask() {
-    for (int i = 0; i < 20_000; ++i) {
-      for (int j = 0; j < 20_000; ++j) {
+    for (int i = 0; i < 200_000; ++i) {
+      for (int j = 0; j < 200_000; ++j) {
         // simulator of action
       }
     }
