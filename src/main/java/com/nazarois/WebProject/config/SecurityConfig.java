@@ -30,28 +30,7 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.cors(
-            corsCustomizer ->
-                corsCustomizer.configurationSource(
-                    request -> {
-                      CorsConfiguration config = new CorsConfiguration();
-                      config.setAllowedOriginPatterns(List.of(CLIENT_URL));
-                      config.setAllowedMethods(
-                          Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
-                      config.setAllowedHeaders(
-                          Arrays.asList(
-                              "Access-Control-Allow-Origin",
-                              "Access-Control-Allow-Headers",
-                              "X-Requested-With",
-                              "Origin",
-                              "Content-Type",
-                              "Accept",
-                              "Authorization"));
-                      config.setAllowCredentials(true);
-                      config.setMaxAge(3600L);
-                      return config;
-                    }))
-        .csrf(AbstractHttpConfigurer::disable)
+    http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(AUTH_LINK + "/**")

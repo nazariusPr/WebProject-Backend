@@ -113,8 +113,8 @@ public class AsyncServiceImpl implements AsyncService {
   }
 
   private void simulateTask() {
-    for (int i = 0; i < 200_000; ++i) {
-      for (int j = 0; j < 200_000; ++j) {
+    for (int i = 0; i < 20_000; ++i) {
+      for (int j = 0; j < 20_000; ++j) {
         // simulator of action
       }
     }
