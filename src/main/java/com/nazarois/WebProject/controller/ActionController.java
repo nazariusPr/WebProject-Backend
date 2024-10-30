@@ -9,6 +9,9 @@ import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.service.ActionService;
 import com.nazarois.WebProject.service.SseService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.ValidationException;
 import java.security.Principal;
 import java.util.Objects;
@@ -38,12 +41,21 @@ public class ActionController {
   private final ActionService actionService;
   private final SseService sseService;
 
+  @Operation(summary = "Read all actions of the user")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Actions retrieved successfully")
+  })
   @GetMapping
   public ResponseEntity<PageDto<ActionDto>> read(Pageable pageable, Principal principal) {
     log.info("**/ Reading all actions of user");
     return ResponseEntity.ok(actionService.read(principal.getName(), pageable));
   }
 
+  @Operation(summary = "Filter actions of the user")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Filtered actions retrieved successfully"),
+    @ApiResponse(responseCode = "403", description = "Access denied")
+  })
   @GetMapping("/filter")
   public ResponseEntity<PageDto<ActionDto>> read(
       ActionFilterDto filter, Pageable pageable, Principal principal) {
@@ -51,6 +63,12 @@ public class ActionController {
     return ResponseEntity.ok(actionService.read(filter, principal.getName(), pageable));
   }
 
+  @Operation(summary = "Read a specific action by ID")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Action retrieved successfully"),
+    @ApiResponse(responseCode = "403", description = "Access denied"),
+    @ApiResponse(responseCode = "404", description = "Action not found")
+  })
   @GetMapping("/{actionId}")
   @PreAuthorize("@securityUtils.hasAccess(#actionId, authentication) or hasRole('ROLE_ADMIN')")
   public ResponseEntity<DetailActionDto> read(@PathVariable UUID actionId) {
@@ -58,6 +76,12 @@ public class ActionController {
     return ResponseEntity.ok(actionService.read(actionId));
   }
 
+  @Operation(summary = "Generate an image based on action request")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Image generated successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid request data"),
+    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+  })
   @PostMapping("/generate-image")
   public ResponseEntity<ActionDto> generateImage(
       @Validated @RequestBody ActionRequestDto request, BindingResult result, Principal principal) {
@@ -66,11 +90,15 @@ public class ActionController {
       throw new ValidationException(
           Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
     }
-
     log.info("**/ Generating image");
     return ResponseEntity.ok(actionService.generate(request, principal.getName()));
   }
 
+  @Operation(summary = "Subscribe to updates for a specific action")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Subscribed to updates successfully"),
+    @ApiResponse(responseCode = "403", description = "Access denied")
+  })
   @GetMapping("/{actionId}/updates")
   @PreAuthorize("@securityUtils.hasAccess(#actionId, #accessToken) or hasRole('ROLE_ADMIN')")
   public SseEmitter subscribeToActionUpdates(
@@ -79,6 +107,12 @@ public class ActionController {
     return sseService.registerClient(actionId);
   }
 
+  @Operation(summary = "Restart an action")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Action restarted successfully"),
+    @ApiResponse(responseCode = "403", description = "Access denied"),
+    @ApiResponse(responseCode = "404", description = "Action not found")
+  })
   @PatchMapping("/restart/{actionId}")
   @PreAuthorize("@securityUtils.hasAccess(#actionId, authentication) or hasRole('ROLE_ADMIN')")
   public ResponseEntity<ActionDto> restartAction(@PathVariable UUID actionId, Principal principal) {
@@ -86,6 +120,12 @@ public class ActionController {
     return ResponseEntity.ok(actionService.restart(actionId, principal.getName()));
   }
 
+  @Operation(summary = "Cancel an action")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Action canceled successfully"),
+    @ApiResponse(responseCode = "403", description = "Access denied"),
+    @ApiResponse(responseCode = "404", description = "Action not found")
+  })
   @PatchMapping("/cancel/{actionId}")
   @PreAuthorize("@securityUtils.hasAccess(#actionId, authentication) or hasRole('ROLE_ADMIN')")
   public ResponseEntity<ActionDto> cancelAction(@PathVariable UUID actionId) {
