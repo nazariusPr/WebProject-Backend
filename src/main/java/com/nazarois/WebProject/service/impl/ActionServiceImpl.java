@@ -64,6 +64,11 @@ public class ActionServiceImpl implements ActionService {
   }
 
   @Override
+  public ActionStatus readActionStatus(UUID actionId) {
+    return findById(actionId).getActionStatus();
+  }
+
+  @Override
   public PageDto<ActionDto> read(ActionFilterDto filterDto, String email, Pageable pageable) {
     ActionSpecification specification = new ActionSpecification(filterDto, email);
     Page<Action> actions = repository.findAll(specification, pageable);

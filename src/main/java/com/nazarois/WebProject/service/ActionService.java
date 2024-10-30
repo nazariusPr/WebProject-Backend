@@ -7,6 +7,8 @@ import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
 import com.nazarois.WebProject.model.Action;
 import java.util.UUID;
+
+import com.nazarois.WebProject.model.enums.ActionStatus;
 import org.springframework.data.domain.Pageable;
 
 public interface ActionService {
@@ -15,6 +17,8 @@ public interface ActionService {
   DetailActionDto read(UUID actionId);
 
   PageDto<ActionDto> read(String email, Pageable pageable);
+
+  ActionStatus readActionStatus(UUID actionId);
 
   PageDto<ActionDto> read(ActionFilterDto filterDto, String email, Pageable pageable);
 

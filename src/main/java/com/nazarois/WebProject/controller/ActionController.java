@@ -7,6 +7,7 @@ import com.nazarois.WebProject.dto.action.ActionFilterDto;
 import com.nazarois.WebProject.dto.action.ActionRequestDto;
 import com.nazarois.WebProject.dto.action.DetailActionDto;
 import com.nazarois.WebProject.dto.page.PageDto;
+import com.nazarois.WebProject.model.enums.ActionStatus;
 import com.nazarois.WebProject.service.ActionService;
 import com.nazarois.WebProject.service.SseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -105,6 +106,19 @@ public class ActionController {
       @PathVariable UUID actionId, @RequestParam String accessToken) {
     log.info("**/ Subscribing to action updates " + actionId);
     return sseService.registerClient(actionId);
+  }
+
+  @Operation(summary = "Get the current status of a specific action")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Status retrieved successfully"),
+    @ApiResponse(responseCode = "403", description = "Access denied"),
+    @ApiResponse(responseCode = "404", description = "Action not found")
+  })
+  @GetMapping("/{actionId}/status")
+  @PreAuthorize("@securityUtils.hasAccess(#actionId, authentication) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<ActionStatus> getActionStatus(@PathVariable UUID actionId) {
+    log.info("**/ Getting status of action " + actionId);
+    return ResponseEntity.ok(actionService.readActionStatus(actionId));
   }
 
   @Operation(summary = "Restart an action")
