@@ -2,11 +2,8 @@ package com.nazarois.WebProject.config;
 
 import static com.nazarois.WebProject.constants.AppConstants.ACTION_LINK;
 import static com.nazarois.WebProject.constants.AppConstants.AUTH_LINK;
-import static com.nazarois.WebProject.util.ClientHelper.CLIENT_URL;
 
 import com.nazarois.WebProject.security.filter.JwtAuthenticationFilter;
-import java.util.Arrays;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +15,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @AllArgsConstructor
@@ -36,6 +32,15 @@ public class SecurityConfig {
                 auth.requestMatchers(AUTH_LINK + "/**")
                     .permitAll()
                     .requestMatchers(ACTION_LINK + "/{actionId}/updates")
+                    .permitAll()
+                    .requestMatchers(
+                        "/v2/api-docs/**",
+                        "/v3/api-docs/**",
+                        "/swagger.json",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/webjars/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
