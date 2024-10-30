@@ -19,10 +19,10 @@ public class ImageGeneratorServiceImpl implements ImageGeneratorService {
   private final ImageStorageService imageStorageService;
 
   public List<String> generateImage(GenerateActionDto generateActionDto) {
-    //GeneratedImagesDto response = imageGeneratorClient.generateImage(generateActionDto);
-    //return uploadImages(response);
+    GeneratedImagesDto response = imageGeneratorClient.generateImage(generateActionDto);
+    return uploadImages(response);
 
-    return List.of("1");
+    // return List.of("1");
   }
 
   private List<String> uploadImages(GeneratedImagesDto generatedImagesDto) {
