@@ -1,9 +1,9 @@
 package com.nazarois.WebProject.security.service;
 
 import com.nazarois.WebProject.dto.authentication.AuthenticateDto;
+import com.nazarois.WebProject.dto.authentication.GoogleAuthDto;
 import com.nazarois.WebProject.dto.authentication.TokenDto;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.util.UUID;
 
 public interface AuthenticationService {
@@ -14,6 +14,8 @@ public interface AuthenticationService {
   void resendVerificationEmail(String email);
 
   TokenDto authenticate(AuthenticateDto request, HttpServletResponse response);
+
+  TokenDto googleAuth(GoogleAuthDto authDto, HttpServletResponse response);
 
   TokenDto refreshToken(String refreshToken);
 

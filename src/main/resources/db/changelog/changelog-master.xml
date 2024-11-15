@@ -17,4 +17,7 @@
     <include file="db/changelog/changelogs/ch-create-action-request-table.xml"/>
     <include file="db/changelog/changelogs/ch-remove-column-text-from-action.xml"/>
     <include file="db/changelog/changelogs/ch-add-column-title-to-actions-table.xml"/>
+    <include file="db/changelog/changelogs/ch-create-auth-table.xml"/>
+    <include file="db/changelog/changelogs/ch-add-column-auth-to-user-table.xml"/>
+    <include file="db/changelog/changelogs/ch-insert-records-into-auths.xml"/>
 </databaseChangeLog>

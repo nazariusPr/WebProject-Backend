@@ -18,6 +18,7 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -46,7 +47,8 @@ public class GlobalExceptionHandler {
     ExpiredJwtException.class,
     SecurityException.class,
     TokenExpirationException.class,
-    InvalidTokenException.class
+    InvalidTokenException.class,
+    BadCredentialsException.class
   })
   public final ResponseEntity<?> handleForbiddenException(WebRequest request) {
     ExceptionDto exceptionDto = new ExceptionDto(getErrorAttributes(request));
