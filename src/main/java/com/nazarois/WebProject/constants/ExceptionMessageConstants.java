@@ -21,4 +21,8 @@ public class ExceptionMessageConstants {
       "The action is not permitted or user is not authenticated!";
   public static final String ACTION_LIMITATION_MESSAGE =
       "You can have a maximum of 5 actions in progress.";
+
+  public static final String INVALID_AUTH_TYPE_MESSAGE = "Auth by this method is not allowed!";
+  public static final String INVALID_GOOGLE_TOKEN_MESSAGE = "Failed to verify Google token.";
+  public static final String USER_ALREADY_EXIST_MESSAGE = "User already exist!";
 }

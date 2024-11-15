@@ -3,6 +3,7 @@ package com.nazarois.WebProject.security.controller;
 import static com.nazarois.WebProject.constants.AppConstants.AUTH_LINK;
 
 import com.nazarois.WebProject.dto.authentication.AuthenticateDto;
+import com.nazarois.WebProject.dto.authentication.GoogleAuthDto;
 import com.nazarois.WebProject.dto.authentication.TokenDto;
 import com.nazarois.WebProject.security.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,6 +63,22 @@ public class AuthenticationController {
       @RequestParam UUID token, HttpServletResponse response) {
     log.info("**/ Verify user");
     return ResponseEntity.ok(this.authenticationService.verifyEmail(token, response));
+  }
+
+  @Operation(
+      summary = "Authenticate user using Google OAuth2 token",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Successful authentication"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid Google token or authentication failed"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+      })
+  @PostMapping("/google")
+  public ResponseEntity<TokenDto> googleOAuth2(
+      @RequestBody GoogleAuthDto authDto, HttpServletResponse response) {
+    log.info("**/ Google auth");
+    return ResponseEntity.ok(this.authenticationService.googleAuth(authDto, response));
   }
 
   @Operation(summary = "Resend verification email")
